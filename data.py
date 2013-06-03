@@ -64,7 +64,7 @@ def get_player_stats(player_id):
             stats[statistic_type][stat_name] = dict(
                 value = str(col_data.string),
                 complete = not 'incomplete' in col_data.get('class', []),                
-            )            
+            )
     return stats
 #players = get_players()
 #for p in players:    
