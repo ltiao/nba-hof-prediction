@@ -52,7 +52,6 @@ def get_player_stats(player_id):
     stats = {}
     r = requests.get('http://www.basketball-reference.com/players/{initial}/{id}.html'.format(initial=player_id[0], id=player_id))
     soup = BeautifulSoup(r.text)
-    
     for statistic_type in ('totals', 'per_game', 'advanced', 'playoffs_totals', 'playoffs_per_game', 'playoffs_advanced', 'all_star'):
         stat_section = soup.find('div', {'id': 'all_{type}'.format(type=statistic_type), 'class': 'stw'})
         if stat_section:
@@ -76,9 +75,13 @@ def get_player_stats(player_id):
                     complete = not 'incomplete' in col_data.get('class', []),                
                 )
     return stats
-
-#print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
-#pprint.pprint(get_player_stats('abdulka01'))
-players = get_players()
-for p in players:    
-    pprint.pprint(get_player_stats(p))    
+    
+debug = 0
+    
+if debug:
+    players = get_players()
+    for p in players:    
+        pprint.pprint(get_player_stats(p))
+else:
+    #print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
+    pprint.pprint(get_player_stats('burmaja01')) 
