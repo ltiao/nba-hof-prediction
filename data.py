@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from settings import LOGGING
-import requests, requests_cache, json, logging, logging.config, string
+import requests, requests_cache, json, logging, logging.config, string, pprint
 from bs4 import BeautifulSoup
 
 requests_cache.install_cache('data_cache')
@@ -53,20 +53,32 @@ def get_player_stats(player_id):
     r = requests.get('http://www.basketball-reference.com/players/{initial}/{id}.html'.format(initial=player_id[0], id=player_id))
     soup = BeautifulSoup(r.text)
     
-    for statistic_type in ['totals', 'per_game', 'advanced']:
-        stats[statistic_type] = {}
+    for statistic_type in ('totals', 'per_game', 'advanced', 'playoffs_totals', 'playoffs_per_game', 'playoffs_advanced', 'all_star'):
         stat_section = soup.find('div', {'id': 'all_{type}'.format(type=statistic_type), 'class': 'stw'})
-        stat_table = stat_section.find('div', {'class': 'table_container', 'id': 'div_{type}'.format(type=statistic_type)})
-        raw_headers = stat_table.table.thead.find_all('th')
-        raw_data = stat_table.table.tfoot.tr.find_all('td')
-        for col_header, col_data in zip(raw_headers, raw_data):
-            stat_name = col_header['data-stat']
-            stats[statistic_type][stat_name] = dict(
-                value = str(col_data.string),
-                complete = not 'incomplete' in col_data.get('class', []),                
-            )
+        if stat_section:
+            stats[statistic_type] = {}
+            stat_table = stat_section.find('div', {'class': 'table_container', 'id': 'div_{type}'.format(type=statistic_type)})
+            raw_headers = stat_table.table.thead.find_all('th')
+            raw_data = stat_table.table.tfoot.tr.find_all('td')
+            for col_header, col_data in zip(raw_headers, raw_data):
+                stat_name = col_header['data-stat']
+                try:
+                    stat_value = int(col_data.string)
+                except ValueError:
+                    try:
+                        stat_value = float(col_data.string)
+                    except ValueError:
+                        continue
+                except TypeError:
+                    continue
+                stats[statistic_type][stat_name] = dict(
+                    value = stat_value,
+                    complete = not 'incomplete' in col_data.get('class', []),                
+                )
     return stats
-#players = get_players()
-#for p in players:    
-jabbar = get_player_stats('abdulka01')
-print json.dumps(jabbar, sort_keys=True, indent=4, separators=(',', ': '))    
+
+#print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
+#pprint.pprint(get_player_stats('abdulka01'))
+players = get_players()
+for p in players:    
+    pprint.pprint(get_player_stats(p))    
