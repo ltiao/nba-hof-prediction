@@ -49,9 +49,12 @@ def get_players():
 
 def get_player_profile(player_id):
     logger.info('Obtaining profile of player {id}'.format(id=player_id))
-    stats = {}
     r = requests.get('http://www.basketball-reference.com/players/{initial}/{id}.html'.format(initial=player_id[0], id=player_id))
     soup = BeautifulSoup(r.text)
+    # Get basic information
+    
+    # Get player stats
+    stats = {}
     for statistic_type in ('totals', 'per_game', 'advanced', 'playoffs_totals', 'playoffs_per_game', 'playoffs_advanced', 'all_star'):
         stat_section = soup.find('div', {'id': 'all_{type}'.format(type=statistic_type), 'class': 'stw'})
         if stat_section:
@@ -74,6 +77,27 @@ def get_player_profile(player_id):
                     value = stat_value,
                     complete = not 'incomplete' in col_data.get('class', []),                
                 )
+    
+    # Get leaderboard information
+    other_stats = {}
+    leaderboard_section = soup.find('div', {'id': 'all_leaderboards_other', 'class': 'stw'})
+    if leaderboard_section:
+        # Championships
+        championship_section = leaderboard_section.table.find('span', text='Championships')
+        if championship_section:
+            championship_section = championship_section.parent.parent
+            other_stats['championships'] = []
+            for br in championship_section.find_all('br'):
+                second_link = br.find_previous_sibling('a')
+                if second_link:
+                    other_stats['championships'].append(str(second_link.find_previous_sibling('a').string))
+        
+        
+        #print leaderboard_section.table.find('span', text='All-Star Games').parent.parent
+        #print leaderboard_section.table.find('span', text='MVP Award Shares').parent.parent
+                #print str(col.div.div.span.string)
+                #print col.div.prettify()
+                #print [str(a.string) for a in col.div.find_all('a')]
     return stats
     
 debug = 0
@@ -84,4 +108,4 @@ if debug:
         pprint.pprint(get_player_profile(p))
 else:
     #print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
-    pprint.pprint(get_player_profile('burmaja01')) 
+    pprint.pprint(get_player_profile('kiddja01')) 
