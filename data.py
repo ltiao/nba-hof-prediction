@@ -47,7 +47,7 @@ def get_players():
             players[pid]['name'] = str(columns[0].a.string)
     return players
 
-def get_player_stats(player_id):
+def get_player_profile(player_id):
     logger.info('Obtaining profile of player {id}'.format(id=player_id))
     stats = {}
     r = requests.get('http://www.basketball-reference.com/players/{initial}/{id}.html'.format(initial=player_id[0], id=player_id))
@@ -81,7 +81,7 @@ debug = 0
 if debug:
     players = get_players()
     for p in players:    
-        pprint.pprint(get_player_stats(p))
+        pprint.pprint(get_player_profile(p))
 else:
     #print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
-    pprint.pprint(get_player_stats('burmaja01')) 
+    pprint.pprint(get_player_profile('burmaja01')) 
