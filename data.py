@@ -53,14 +53,16 @@ def get_player_stats(player_id):
     r = requests.get('http://www.basketball-reference.com/players/{initial}/{id}.html'.format(initial=player_id[0], id=player_id))
     soup = BeautifulSoup(r.text)
     
-    for statistic_type in ['totals', 'per_game', 'advanced']:
+    for statistic_type in ['totals']:#, 'per_game', 'advanced']:
         stats[statistic_type] = {}
         stat_section = soup.find('div', {'id': 'all_{type}'.format(type=statistic_type), 'class': 'stw'})
         stat_table = stat_section.find('div', {'class': 'table_container', 'id': 'div_{type}'.format(type=statistic_type)})
-        headers = [h['data-stat'] for h in stat_table.table.thead.find_all('th')]
-        summary = [str(col.string) for col in stat_table.table.tfoot.tr.find_all('td')]
-        
-        print zip(headers, summary)
+        #headers = [h['data-stat'] for h in stat_table.table.thead.find_all('th')]
+        #summary = [str(col.string) for col in stat_table.table.tfoot.tr.find_all('td')]
+        raw_headers = stat_table.table.thead.find_all('th')
+        raw_data = stat_table.table.tfoot.tr.find_all('td')
+        for col_header, col_data in zip(raw_headers, raw_data)
+            print zip(col_header, col_data)
     
 players = get_players()
 for p in players:    
