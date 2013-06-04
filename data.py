@@ -167,5 +167,15 @@ db_players = db.players
 # 
 #     db_players.save(full_players_info[p])
 
-for p in db_players.find({'stats.totals.fg3a.complete': False}):
-   pprint.pprint(p['to'])
+query = {
+    'stats.totals.g.value': {'$gte': 400},
+    'active': False,
+    'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    'to': {'$lte': datetime.datetime.now()-datetime.timedelta(days=5*365)},
+    'hall_of_fame': True,
+}
+
+for p in db_players.find(query):
+    pprint.pprint(p)
+    
+print db_players.find(query).count()
