@@ -166,22 +166,6 @@ db_players = db.players
 #     full_players_info[p]['_id'] = p
 # 
 #     db_players.save(full_players_info[p])
-    
-# p_info = get_players_info()
-# for pid in p_info:
-#     logger.info('Inserting player {p} into MongoDB'.format(p=pid))
-#     p_info[pid]['_id'] = pid
-#     try:
-#         db_players.insert(p_info[pid])
-#     except pymongo.errors.DuplicateKeyError:
-#         continue
 
-#for p in db_players.find({'stats.totals.fg3a.complete': False}):
-#    pprint.pprint(p['to'])
-#for player in db_players.find({'name': 'Scottie Pippen'}):
-#    pprint.pprint(player)
-    #print player['name']
-    #pprint.pprint(player['stats']['totals']['g'])
-    #print
-#for player in db_players.find({'active': True}):
-#    pprint.pprint(player)
+for p in db_players.find({'stats.totals.fg3a.complete': False}):
+   pprint.pprint(p['to'])
