@@ -1,8 +1,14 @@
 #!/usr/bin/python
 
 from settings import LOGGING
-import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime
+import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime, pymongo
 from bs4 import BeautifulSoup
+from pymongo import MongoClient
+
+client = MongoClient()
+
+db = client.hof_database
+collection = db.players_collection
 
 requests_cache.install_cache('data_cache')
 
@@ -136,8 +142,7 @@ def feet_to_cm(feet_inches_str):
 def get_players_info():
     players = get_players()
     full_players_info = {}
-    for i, p in enumerate(players):
-        if i == 3: break
+    for p in players:
         player = players[p]
         full_players_info[p] = get_player_profile(p)
         # List of positions in case the player plays multiple
@@ -159,6 +164,24 @@ def get_players_info():
             logger.exception('Could not parse player {p}\'s date of birth'.format(p=p))
     
     return full_players_info
+
+db_players = db.players
     
-p_info = get_players_info()
-pprint.pprint(p_info)
+# p_info = get_players_info()
+# for pid in p_info:
+#     logger.info('Inserting player {p} into MongoDB'.format(p=pid))
+#     p_info[pid]['_id'] = pid
+#     try:
+#         db_players.insert(p_info[pid])
+#     except pymongo.errors.DuplicateKeyError:
+#         continue
+
+for p in db_players.find({'stats.totals.fg3a.complete': False}):
+    pprint.pprint(p['to'])
+#for player in db_players.find({'name': 'Scottie Pippen'}):
+#    pprint.pprint(player)
+    #print player['name']
+    #pprint.pprint(player['stats']['totals']['g'])
+    #print
+#for player in db_players.find({'active': True}):
+#    pprint.pprint(player)
