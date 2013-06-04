@@ -122,7 +122,11 @@ def get_player_profile(player_id):
             career_mvpshare = str(mvpshares_section.find('a', text='Career').next_sibling.string)
             other_stats['mvpshares'] = float(career_mvpshare.split()[0])
             
-    return profile
+    return {
+        'basic': profile,
+        'stats': stats,
+        'honors': other_stats,
+    }
     
 debug = 1
     
