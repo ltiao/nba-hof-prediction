@@ -3,7 +3,6 @@
 from settings import LOGGING
 import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime
 from bs4 import BeautifulSoup
-import bson.json_util
 
 requests_cache.install_cache('data_cache')
 
@@ -19,7 +18,7 @@ def memoize(filename):
                 cache = json.load(open(filename, 'r'))
             except (IOError, ValueError):
                 cache = original_func()
-                json.dump(cache, open(filename, 'w'), default=lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None)
+                json.dump(cache, open(filename, 'w'))
             return cache
             
         return new_func
@@ -138,7 +137,7 @@ def get_players_info():
     players = get_players()
     full_players_info = {}
     for i, p in enumerate(players):
-        if i == 5: break
+        if i == 3: break
         player = players[p]
         full_players_info[p] = get_player_profile(p)
         # List of positions in case the player plays multiple
@@ -149,11 +148,11 @@ def get_players_info():
         except ValueError:
             logger.exception('Could not parse player {p}\'s weight'.format(p=p))
             
-        full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y').date()
-        full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y').date()
+        full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y').date().isoformat()
+        full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y').date().isoformat()
     
         try:
-            full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y').date()
+            full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y').date().isoformat()
         except TypeError:
             logger.exception('Player {p} does not have date of birth listed'.format(p=p))
         except ValueError:
@@ -162,3 +161,4 @@ def get_players_info():
     return full_players_info
     
 p_info = get_players_info()
+pprint.pprint(p_info)
