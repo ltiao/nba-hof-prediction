@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
 from settings import LOGGING
-import requests, requests_cache, json, logging, logging.config, string, pprint, re
+import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime
 from bs4 import BeautifulSoup
+import bson.json_util
 
 requests_cache.install_cache('data_cache')
 
@@ -18,7 +19,7 @@ def memoize(filename):
                 cache = json.load(open(filename, 'r'))
             except (IOError, ValueError):
                 cache = original_func()
-                json.dump(cache, open(filename, 'w'))
+                json.dump(cache, open(filename, 'w'), default=bson.json_util.default)
             return cache
             
         return new_func
@@ -96,7 +97,7 @@ def get_player_profile(player_id):
                     complete = not 'incomplete' in col_data.get('class', []),                
                 )
     
-    # Get leaderboard information
+    # Get honours and awards information
     other_stats = {}
     leaderboard_section = soup.find('div', {'id': 'all_leaderboards_other', 'class': 'stw'})
     if leaderboard_section:
@@ -122,19 +123,42 @@ def get_player_profile(player_id):
             career_mvpshare = str(mvpshares_section.find('a', text='Career').next_sibling.string)
             other_stats['mvpshares'] = float(career_mvpshare.split()[0])
             
-    return {
-        'basic': profile,
-        'stats': stats,
-        'honors': other_stats,
-    }
+    profile['stats'] = stats
+    profile['honors'] = other_stats
     
-debug = 1
+    return profile
     
-if debug:
+def feet_to_cm(feet_inches_str):
+    feet, inches = [int(s) for s in feet_inches_str.split('-')]
+    inches += 12 * feet
+    return int(inches * 2.54 + 0.5)
+
+@memoize('players_full_info.json')
+def get_players_info():
     players = get_players()
-    for p in players:    
-        pprint.pprint(get_player_profile(p))
-else:
-    #print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
-    pprint.pprint(get_player_profile('kamanch01'))
-    pprint.pprint(get_player_profile('abdulka01'))
+    full_players_info = {}
+    for i, p in enumerate(players):
+        if i == 5: break
+        player = players[p]
+        full_players_info[p] = get_player_profile(p)
+        # List of positions in case the player plays multiple
+        full_players_info[p]['pos'] = player.get('pos', []).split('-')
+        try:
+            full_players_info[p]['wt'] = int(player.get('wt'))
+            full_players_info[p]['ht'] = feet_to_cm(player.get('ht'))
+        except ValueError:
+            logger.exception('Could not parse player {p}\'s weight'.format(p=p))
+            
+        full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y').date()
+        full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y').date()
+    
+        try:
+            full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y').date()
+        except TypeError:
+            logger.exception('Player {p} does not have date of birth listed'.format(p=p))
+        except ValueError:
+            logger.exception('Could not parse player {p}\'s date of birth'.format(p=p))
+    
+    return full_players_info
+    
+p_info = get_players_info()
