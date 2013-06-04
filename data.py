@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from settings import LOGGING
-import requests, requests_cache, json, logging, logging.config, string, pprint
+import requests, requests_cache, json, logging, logging.config, string, pprint, re
 from bs4 import BeautifulSoup
 
 requests_cache.install_cache('data_cache')
@@ -52,6 +52,24 @@ def get_player_profile(player_id):
     r = requests.get('http://www.basketball-reference.com/players/{initial}/{id}.html'.format(initial=player_id[0], id=player_id))
     soup = BeautifulSoup(r.text)
     # Get basic information
+    profile = {}
+    basic_info_section = soup.find('div', {'id': 'info_box'})
+    
+    # Full name
+    profile['name'] = str(basic_info_section.h1.string)
+    
+    # Activity
+    profile['active'] = basic_info_section.find('span', {'class': 'bold_text'}, text='Experience:') is not None
+    
+    # Hall of Fame
+    try:
+        profile['hall_of_fame'] = basic_info_section.find(
+            'span', {'class': 'bold_text'}, text='Hall of Fame:'
+        ).find_next_sibling(
+            text=re.compile('Inducted as Player')
+        ) is not None
+    except AttributeError:
+        profile['hall_of_fame'] = False
     
     # Get player stats
     stats = {}
@@ -85,22 +103,28 @@ def get_player_profile(player_id):
         # Championships
         championship_section = leaderboard_section.table.find('span', text='Championships')
         if championship_section:
-            championship_section = championship_section.parent.parent
             other_stats['championships'] = []
+            championship_section = championship_section.parent.parent
             for br in championship_section.find_all('br'):
                 second_link = br.find_previous_sibling('a')
                 if second_link:
                     other_stats['championships'].append(str(second_link.find_previous_sibling('a').string))
-        
-        
-        #print leaderboard_section.table.find('span', text='All-Star Games').parent.parent
-        #print leaderboard_section.table.find('span', text='MVP Award Shares').parent.parent
-                #print str(col.div.div.span.string)
-                #print col.div.prettify()
-                #print [str(a.string) for a in col.div.find_all('a')]
-    return stats
+        # All-star appearances
+        allstar_section = leaderboard_section.table.find('span', text='All-Star Games')
+        if allstar_section:
+            other_stats['allstar_appearances'] = []
+            allstar_section = allstar_section.parent.parent
+            other_stats['allstar_appearances'] = [str(br.find_previous_sibling('a').string) for br in allstar_section.find_all('br')]
+        # MVP Shares
+        mvpshares_section = leaderboard_section.table.find('span', text='MVP Award Shares')
+        if mvpshares_section:
+            mvpshares_section = mvpshares_section.parent.parent
+            career_mvpshare = str(mvpshares_section.find('a', text='Career').next_sibling.string)
+            other_stats['mvpshares'] = float(career_mvpshare.split()[0])
+            
+    return profile
     
-debug = 0
+debug = 1
     
 if debug:
     players = get_players()
@@ -108,4 +132,5 @@ if debug:
         pprint.pprint(get_player_profile(p))
 else:
     #print json.dumps(get_player_stats('abdulka01'), sort_keys=True, indent=4, separators=(',', ': '))    
-    pprint.pprint(get_player_profile('kiddja01')) 
+    pprint.pprint(get_player_profile('kamanch01'))
+    pprint.pprint(get_player_profile('abdulka01'))
