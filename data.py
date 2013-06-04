@@ -138,34 +138,34 @@ def feet_to_cm(feet_inches_str):
     inches += 12 * feet
     return int(inches * 2.54 + 0.5)
 
-@memoize('players_full_info.json')
-def get_players_info():
-    players = get_players()
-    full_players_info = {}
-    for p in players:
-        player = players[p]
-        full_players_info[p] = get_player_profile(p)
-        # List of positions in case the player plays multiple
-        full_players_info[p]['pos'] = player.get('pos', []).split('-')
-        try:
-            full_players_info[p]['wt'] = int(player.get('wt'))
-            full_players_info[p]['ht'] = feet_to_cm(player.get('ht'))
-        except ValueError:
-            logger.exception('Could not parse player {p}\'s weight'.format(p=p))
-            
-        full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y').date().isoformat()
-        full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y').date().isoformat()
-    
-        try:
-            full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y').date().isoformat()
-        except TypeError:
-            logger.exception('Player {p} does not have date of birth listed'.format(p=p))
-        except ValueError:
-            logger.exception('Could not parse player {p}\'s date of birth'.format(p=p))
-    
-    return full_players_info
-
 db_players = db.players
+
+players = get_players()
+full_players_info = {}
+for p in players:
+    player = players[p]
+    full_players_info[p] = get_player_profile(p)
+    # List of positions in case the player plays multiple
+    full_players_info[p]['pos'] = player.get('pos', []).split('-')
+    try:
+        full_players_info[p]['wt'] = int(player.get('wt'))
+        full_players_info[p]['ht'] = feet_to_cm(player.get('ht'))
+    except ValueError:
+        logger.exception('Could not parse player {p}\'s weight'.format(p=p))
+        
+    full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y')
+    full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y')
+
+    try:
+        full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y')
+    except TypeError:
+        logger.exception('Player {p} does not have date of birth listed'.format(p=p))
+    except ValueError:
+        logger.exception('Could not parse player {p}\'s date of birth'.format(p=p))
+
+    full_players_info[p]['_id'] = p
+
+    db_players.save(full_players_info[p])
     
 # p_info = get_players_info()
 # for pid in p_info:
@@ -176,8 +176,8 @@ db_players = db.players
 #     except pymongo.errors.DuplicateKeyError:
 #         continue
 
-for p in db_players.find({'stats.totals.fg3a.complete': False}):
-    pprint.pprint(p['to'])
+#for p in db_players.find({'stats.totals.fg3a.complete': False}):
+#    pprint.pprint(p['to'])
 #for player in db_players.find({'name': 'Scottie Pippen'}):
 #    pprint.pprint(player)
     #print player['name']
