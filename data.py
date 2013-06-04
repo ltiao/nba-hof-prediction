@@ -19,7 +19,7 @@ def memoize(filename):
                 cache = json.load(open(filename, 'r'))
             except (IOError, ValueError):
                 cache = original_func()
-                json.dump(cache, open(filename, 'w'), default=bson.json_util.default)
+                json.dump(cache, open(filename, 'w'), default=lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None)
             return cache
             
         return new_func
