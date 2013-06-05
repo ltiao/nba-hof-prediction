@@ -236,7 +236,8 @@ for p in db_players.find(query):
     player.append(get_nested(p, 'hall_of_fame'))
     weka_players.append(player)
     
-pprint.pprint(weka_players)
+#pprint.pprint(weka_players)
 #print db_players.find(query).count()
 fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
-arff.dump('advanced_nba_stats.arff', weka_players, relation="nba", names=fields)
+#fields.extend(['honors.allstar_appearances', 'honors.mvpshares', 'hall_of_fame'])
+arff.dump('new_advanced_nba_stats.arff', weka_players, relation="nba", names=fields)
