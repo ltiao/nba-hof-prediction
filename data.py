@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from settings import LOGGING
-import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime, pymongo
+import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime, pymongo, arff
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
@@ -168,6 +168,7 @@ db_players = db.players
 #     db_players.save(full_players_info[p])
 
 query = {
+    #'name': 'Michael Jordan',
     'stats.totals.g.value': {'$gte': 100},
     'active': False,
     'from': {'$gte': datetime.datetime(1951, 1, 1)},
@@ -196,12 +197,46 @@ query = {
     'stats.per_game.pts_per_g.complete': True,
     'stats.per_game.ast_per_g': {'$exists': True},
     'stats.per_game.ast_per_g.complete': True,
-    'hall_of_fame': True,
+    #'hall_of_fame': True,
 }
 
-['stats.totals.g.value']
+def get_nested(player_info, field_name, default=None):
+    for n in field_name.split('.'):
+        try:
+            a = a.get(n, default)
+        except NameError:
+            a = player_info.get(n, default)
+        except AttributeError:
+            break
+    return a
 
-g = db_players.find_one(query)
-print g['stats.totals.g.value']
+fields = [
+    'stats.totals.pts.value', 
+    'stats.totals.ast.value', 
+    'stats.totals.trb.value',
+    'stats.per_game.pts_per_g.value',
+    'stats.per_game.ast_per_g.value',
+    'stats.per_game.trb_per_g.value',
+    'stats.advanced.per.value', 
+    'stats.advanced.ts_pct.value', 
+    'stats.advanced.ws.value', 
+    'stats.advanced.dws.value', 
+    'stats.advanced.ows.value', 
+    'stats.advanced.efg_pct.value', 
+    'stats.totals.g.value', 
+    #'hall_of_fame'
+]
+
+weka_players = []
+for p in db_players.find(query):
+    player = [get_nested(p, f) for f in fields]
+    player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
+    player.append(len(get_nested(p, 'honors.championships', [])))
+    player.append(get_nested(p, 'honors.mvpshares', 0))
+    player.append(get_nested(p, 'hall_of_fame'))
+    weka_players.append(player)
     
+pprint.pprint(weka_players)
 #print db_players.find(query).count()
+fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
+arff.dump('advanced_nba_stats.arff', weka_players, relation="nba", names=fields)
