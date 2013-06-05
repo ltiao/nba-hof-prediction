@@ -168,14 +168,38 @@ db_players = db.players
 #     db_players.save(full_players_info[p])
 
 query = {
-    'stats.totals.g.value': {'$gte': 400},
+    'stats.totals.g.value': {'$gte': 100},
     'active': False,
-    'from': {'$gte': datetime.datetime(1952, 1, 1)},
-    'to': {'$lte': datetime.datetime.now()-datetime.timedelta(days=5*365)},
+    'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
+    'stats.advanced.per': {'$exists': True},
+    'stats.advanced.per.complete': True,
+    'stats.advanced.ts_pct': {'$exists': True},
+    'stats.advanced.ts_pct.complete': True,
+    'stats.advanced.ws': {'$exists': True},
+    'stats.advanced.ws.complete': True,
+    'stats.advanced.dws': {'$exists': True},
+    'stats.advanced.dws.complete': True,
+    'stats.advanced.ows': {'$exists': True},
+    'stats.advanced.ows.complete': True,
+    'stats.advanced.efg_pct': {'$exists': True},
+    'stats.advanced.efg_pct.complete': True,
+    'stats.totals.pts': {'$exists': True},
+    'stats.totals.pts.complete': True,
+    'stats.totals.ast': {'$exists': True},
+    'stats.totals.ast.complete': True,
+    'stats.totals.trb': {'$exists': True},
+    'stats.totals.trb.complete': True,
+    'stats.per_game.trb_per_g': {'$exists': True},
+    'stats.per_game.trb_per_g.complete': True,
+    'stats.per_game.pts_per_g': {'$exists': True},
+    'stats.per_game.pts_per_g.complete': True,
+    'stats.per_game.ast_per_g': {'$exists': True},
+    'stats.per_game.ast_per_g.complete': True,
     'hall_of_fame': True,
 }
 
-for p in db_players.find(query):
-    pprint.pprint(p)
+g = db_players.find_one(query)
+print g['stats']['advanced']['per']['value']
     
-print db_players.find(query).count()
+#print db_players.find(query).count()
