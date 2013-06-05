@@ -170,7 +170,7 @@ db_players = db.players
 query = {
     'stats.totals.g.value': {'$gte': 400},
     'active': False,
-    'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    'from': {'$gte': datetime.datetime(1952, 1, 1)},
     'to': {'$lte': datetime.datetime.now()-datetime.timedelta(days=5*365)},
     'hall_of_fame': True,
 }
