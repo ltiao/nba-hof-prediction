@@ -199,7 +199,9 @@ query = {
     'hall_of_fame': True,
 }
 
+['stats.totals.g.value']
+
 g = db_players.find_one(query)
-print g['stats']['advanced']['per']['value']
+print g['stats.totals.g.value']
     
 #print db_players.find(query).count()
