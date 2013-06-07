@@ -168,10 +168,12 @@ db_players = db.players
 #     db_players.save(full_players_info[p])
 
 query = {
-    #'stats.totals.g.value': {'$gte': 100},
+    #'pos': {'$nin': ['G']},
+    #'pos': 'G',
+    'stats.totals.g.value': {'$gte': 100},
     'active': False,
-    'from': {'$gt': datetime.datetime(1951, 1, 1)},
-    'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
+    'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    'to': {'$lt': datetime.datetime.now() - datetime.timedelta(days=5*365)},
     'stats.advanced.per': {'$exists': True},
     'stats.advanced.per.complete': True,
     'stats.advanced.ts_pct': {'$exists': True},
@@ -190,8 +192,16 @@ query = {
     'stats.totals.ast.complete': True,
     'stats.totals.trb': {'$exists': True},
     'stats.totals.trb.complete': True,
+    # 'stats.totals.stl': {'$exists': True},
+    # 'stats.totals.stl.complete': True,
+    # 'stats.totals.blk': {'$exists': True},
+    # 'stats.totals.blk.complete': True,
     'stats.per_game.trb_per_g': {'$exists': True},
     'stats.per_game.trb_per_g.complete': True,
+    # 'stats.per_game.stl_per_g': {'$exists': True},
+    # 'stats.per_game.stl_per_g.complete': True,
+    # 'stats.per_game.blk_per_g': {'$exists': True},
+    # 'stats.per_game.blk_per_g.complete': True,
     'stats.per_game.pts_per_g': {'$exists': True},
     'stats.per_game.pts_per_g.complete': True,
     'stats.per_game.ast_per_g': {'$exists': True},
@@ -213,9 +223,13 @@ fields = [
     'stats.totals.pts.value', 
     'stats.totals.ast.value', 
     'stats.totals.trb.value',
+    # 'stats.totals.blk.value', 
+    # 'stats.totals.stl.value',
     'stats.per_game.pts_per_g.value',
     'stats.per_game.ast_per_g.value',
     'stats.per_game.trb_per_g.value',
+    # 'stats.per_game.stl_per_g.value',
+    # 'stats.per_game.blk_per_g.value',
     'stats.advanced.per.value', 
     'stats.advanced.ts_pct.value', 
     'stats.advanced.ws.value', 
@@ -228,7 +242,8 @@ fields = [
 
 weka_players = []
 for p in db_players.find(query):
-    if (p['to']-p['from']).days/365 < 2: continue
+    #pprint.pprint(get_nested(p, 'stats.totals'))
+    #if (p['to']-p['from']).days/365 < 1: continue
     player = [get_nested(p, f) for f in fields]
     player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
     player.append(len(get_nested(p, 'honors.championships', [])))
@@ -237,7 +252,7 @@ for p in db_players.find(query):
     weka_players.append(player)
     
 fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
-arff.dump('years_pro.arff', weka_players, relation="nba", names=fields)
+arff.dump('1951_all.arff', weka_players, relation="nba", names=fields)
 
 def parse_probability(weka_output):
     for line in weka_output.splitlines():
@@ -301,16 +316,19 @@ def predict():
         logger.info('Player {name}\'s HOF Probability is {prob}'.format(name = p['name'], prob = prob))
         db_players.update({'_id': p['_id']}, {"$set":{"hof_probability": prob}}, safe=True, upsert=True)
     
-#predict()
+# #predict()
 # query = {
+#     #'name': 'Larry Foust',
 #     'stats.totals.g.value': {'$gte': 100},    
-#     'hof_probability': {'$gte': 0.5},
-#     'active': False,
+#     'hof_probability': {'$gte': 0.4},
+#     'active': True,
 #     'hall_of_fame': False,
 #     'from': {'$gte': datetime.datetime(1951, 1, 1)},
-#     'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
+#     #'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
 # }
 # for p in db_players.find(query).sort("hof_probability", pymongo.DESCENDING):
+#     #pprint.pprint(p)
 #     print p['hof_probability'], p['name']
 # 
-# print db_players.find(query).count()
+# for p in db_players.find({'hall_of_fame': True}):
+#     print (p['to']-p['from']).days/365, p['name']

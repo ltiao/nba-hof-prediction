@@ -1,0 +1,183 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+
+
+\usepackage{url}
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{University of New South Wales, School of Computer Science and Engineering} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Predicting Basketball Hall of Fame Membership\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+\large COMP9417 - Machine Learning and Data Mining: Project
+}
+
+\author{Chi-Chun Tiao} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+Enshrinement into the Naismith Memorial Basketball Hall of Fame is an honour bestowed upon exceptional basketball players, coaches, referees, executives and other major contributors to the sport across the world. As one might expect, the population of inductees is dominated by members in the players category - 158 members in the players category out of a total of 326 members as of the enshrinement class of 2013\cite{hof_member_idx}. Of the 158 players in the Hall of Fame, 103 played in the National Basketball Association (NBA), easily rendering it the league with the most players in the Hall of Fame\footnote{Other inductees of this category include college, international and female players, etc., most of whom have their own shrines already: The College Experience (NCAA), the FIBA Hall (international) and the WBHOF (women's).}. As such, we shall limit our discussion to individuals who have played in the NBA. \footnote{Indeed, this inevitably places prejudice against players who had decorated international or college careers, but relatively short or less impressive stints in the NBA, but might nevertheless be considered worthy of Hall of Fame induction.}\\
+\\
+Unlike other major sport's Hall of Fames where sportswriter voters openly debate their choices, the Naismith Hall of Fame has an opaque and closely held selection process\cite{aschburner}. As a consequence of the screening committee's lack of transparency, the criteria for induction is vague at best and discussion regarding the merits of players is subjective. It would be useful to form an objective basis upon which a player's merits can be analysed and used to predict whether he will be inducted into the Hall of Fame. The goal of this project is to develop such a method using machine learning techniques.\\
+\\
+Currently, some popular methods used include the \textit{Keltner List}, a less objective but systematic method adopted from baseball (as many advanced basketball metrics often are) and also a logistic regression model\cite{logregress}, developed by \textit{Basketball Reference}, a site that provides comprehensive basketball statistics. However, no attempts have been made to develop a machine learning model (to the best of my knowledge). Work has been done to solve the same problem in baseball using a Radial Basis Function Network by Smith, Lloyd and Downey, James (2009)\cite{lloyd}, and some of the methods here shall be based upon this.\\
+\\
+In this project, I strive to harness the capabilities and advantages of machine learning methods to build a model with better predictive accuracy than that of the aforementioned methods, by experimenting with various different datasets, features and learning algorithms. This report documents the methods employed, work done to collect and preprocess the data, experimentations involved and analysis of the various results.
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+
+\section{Experimentation}
+
+\subsection{Domain-Specific Features}
+
+In the initial stages of this project, simple basketball statistics were incorporated as features into the training set, alongside other metrics that indicate the relative merit of particular players with respect to other players who played in the league in his time: 
+
+\begin{tabular}{p{0.3\textwidth} p{0.26\textwidth}p{0.5\textwidth}}
+
+\begin{itemize}
+  \item Points Per Game
+  \item Assists Per Game
+  \item Rebounds Per Game
+  \end{itemize} &
+
+\begin{itemize}
+  \item Career Points
+  \item Career Assists
+  \item Career Rebounds
+\end{itemize} &
+
+\begin{itemize}
+  \item Most Valuable Player Awards
+  \item All-Star Game Appearances
+  \item Year Played in the League
+\end{itemize}
+
+\end{tabular}
+
+Taking into account the fact that a player must be fully retired for five years before being eligible for induction\cite{hof_guidelines} and that the inaugural NBA All-Star Game took place in 1951, we used data from players who debuted in the league during or after the 1951-52 season and retired before the 2008-09 season. This not only avoids differences in basketball eras but ensures comprehensive statistics for each player (no missing or incomplete features for any instance) since all the above statistics were being recorded in that time period. Other key statistics such as \textit{steals}, \textit{blocks} and \textit{field goal percentage} were not incorporated for this very reason, as many players either did not have these statistics recorded at all or only had it recorded for some seasons.\\ %This was not considered huge drawback as it helped to avoid excessive dimensionality.\\
+\\
+In an effort to improve predictive accuracy on this model built on a relatively small number of features, several advanced basketball statistics were considered. Namely, \textit{win shares}, a metric adopted from baseball that is designed to estimate a player's contribution to his team winning, which is made up of two other metrics, \textit{defensive win shares} and \textit{offensive win shares}, each of which considers a players offensive and defensive contributions respectively. Since it has been said that players are inducted into the Hall of Fame based not only on statistics, but on their defensive prowess, which may not reflect well on a stat sheet, I decided it would be beneficial to incorporate both defensive and offensive win shares. Another statistic considered was the \textit{Player Efficiency Rating (PER)}, a rather arcane metric which summarises a player's performance and contributions into a one number using a very detailed formula. Finally, the statistics \textit{effective field goal percentage (eFG\%)} and \textit{True Shooting Percentage (TS\%)} were considered, both of which incorporate 3-point and 2-point field goals, the former of which adjusts for the fact that a 3-point field goal is worth one more point than a 2-point field goal and the latter also considers free throw percentage.\\
+\\
+The last metric considered was the number of NBA Championship Titles the player has won.\\
+\\
+As noted earlier, since many statistics were not being recorded prior to the 1973-74 season, we cannot simply incorporate these advanced basketball metrics into our model as most rely on these missing statistics. Luckily, \textit{Basketball Reference} provides a complete system with estimations to account for 	missing statistics in particular eras, the formulae for which are quite detailed. The method for calculating win shares and player efficiency rating can be found at \url{http://www.basketball-reference.com/about/ws.html} and \url{http://www.basketball-reference.com/about/per.html}.\\
+
+\subsection{Data Collection and Preparation}
+
+A considerable challenge faced in this project was the absence of a readily available data repository relevant to the problem, so a substantial amount of work was devoted overcoming this by web data extraction (scraping) and parsing data into a format that could be analysed with machine learning software. The documentation of the data collection process is kept as brief as possible since while part of the overall machine learning and data mining process, it has little to do with machine learning itself.\\
+\\
+At first, official NBA stats portal \url{http://stats.nba.com/} seemed like a promising avenue for data collection. However, not only were there no datasets available for download, the site did not provide any APIs. To avoid resorting to scraping the pages, I inspected the source of the site's pages to find ways to access the backend scripts that drove the site's data and was able to find Javascript sources that provided results in a friendly Javascript Object Notation (JSON) format. Since each source only provided a subset of features for the particular player queried, I was required the cross reference these data sources to create a complete set of features for each player. The data sources and the respective features is provides are described below:
+
+\begin{itemize}
+\item \url{http://stats.nba.com/stats/commonallplayers} - \textit{List of all NBA players}
+\item \url{http://stats.nba.com/stats/commonplayerinfo/?PlayerID=<player_id>} - \textit{All-Star Appearances (Not available for active players), Position}
+\item \url{http://stats.nba.com/feeds/players/profile/<player_id>_Profile.js} - \textit{Draft Pick, Weight, Height}
+\item \url{http://stats.nba.com/feeds/players/awards/<player_id>_Award.js} - \textit{Most Valuable Player Awards, Hall of Fame Inductee}
+\item \url{http://stats.nba.com/stats/playerprofile} - \textit{Points Per Game, Assists Per Game, Rebounds Per Game, Career Points, Career Assists, Career Rebounds}
+\end{itemize}
+
+
+
+%----------------------------------------------------------------------------------------
+
+
+\begin{appendix}
+\section{Appendix}
+
+\end{appendix}
+
+\begin{thebibliography}{9}
+
+\bibitem{hof_member_idx}
+	\emph{"Hall of Famers"}
+	Retrieved 6 June 2013 from Naismith Memorial Basketball Hall of Fame:\\
+	\url{http://www.hoophall.com/hall-of-famers-index/} 
+
+\bibitem{aschburner}
+Aschburner, Steve. (12 August 2012)
+\emph{"Hall of Fame selection process leaves much to be desired"}.
+Retrieved 6 June 2012 from NBA:
+\url{http://www.nba.com/2010/news/features/steve_aschburner/08/12/hall.process/index.html}   
+
+\bibitem{ziller}
+   Ziller, Tom. (30 March 2010)
+  \emph{"Fans to Vote for Basketball Hall of Fame Inductees"}.
+   Retrieved 1 June 2013 from AOL News:
+   \url{http://nba.fanhouse.com/2010/03/30/fans-to-vote-for-basketball-hall-of-fame-inductees/}
+   
+\bibitem{logregress}
+  \emph{"Hall of Fame Probability"}.
+   Retrieved 1 June 2013 from Basketball Reference:\\
+   \url{http://www.basketball-reference.com/about/hof_prob.html}  
+ 
+\bibitem{lloyd}
+Smith, Lloyd and Downey, James (2009)
+\emph{"Predicting Baseball Hall of Fame Membership using a Radial Basis Function Network,"}
+Journal of Quantitative Analysis in Sports: Vol. 5: Iss. 1, Article 6.
+ 
+\end{thebibliography}
+
+\end{document}
