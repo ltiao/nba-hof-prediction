@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  8 JUN 2013 02:29
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  9 JUN 2013 02:21
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -374,151 +374,190 @@ Package: amsthm 2009/07/02 v2.20.1
 \thm@headsep=\skip52
 \dth@everypar=\toks25
 )
+(/usr/local/texlive/2011/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen113
+)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2010/01/09 v3.1m Customizing captions (AR)
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2010/01/14 v3.1m caption3 kernel (AR)
+\captionmargin=\dimen114
+\captionmargin@=\dimen115
+\captionwidth=\dimen116
+\caption@indent=\dimen117
+\caption@parindent=\dimen118
+\caption@hangindent=\dimen119
+)
+Package caption Info: KOMA-Script document class.
+\c@ContinuedFloat=\count101
+)
+\c@KVtest=\count102
+\sf@farskip=\skip53
+\sf@captopadj=\dimen120
+\sf@capskip=\skip54
+\sf@nearskip=\skip55
+\c@subfigure=\count103
+\c@subfigure@save=\count104
+\c@lofdepth=\count105
+\c@subtable=\count106
+\c@subtable@save=\count107
+\c@lotdepth=\count108
+\sf@top=\skip56
+\sf@bottom=\skip57
+)
 (/usr/local/texlive/2011/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
 )
 (/usr/local/texlive/2011/texmf-dist/tex/latex/lipsum/lipsum.sty
 Package: lipsum 2011/04/14 v1.2 150 paragraphs of Lorem Ipsum dummy text
-\c@lips@count=\count101
+\c@lips@count=\count109
 )
 (/usr/local/texlive/2011/texmf-dist/tex/latex/sectsty/sectsty.sty
 Package: sectsty 2002/02/25 v2.0.2 Commands to change all sectional heading sty
 les
 )
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
-\fancy@headwidth=\skip53
-\f@ncyO@elh=\skip54
-\f@ncyO@erh=\skip55
-\f@ncyO@olh=\skip56
-\f@ncyO@orh=\skip57
-\f@ncyO@elf=\skip58
-\f@ncyO@erf=\skip59
-\f@ncyO@olf=\skip60
-\f@ncyO@orf=\skip61
+\fancy@headwidth=\skip58
+\f@ncyO@elh=\skip59
+\f@ncyO@erh=\skip60
+\f@ncyO@olh=\skip61
+\f@ncyO@orh=\skip62
+\f@ncyO@elf=\skip63
+\f@ncyO@erf=\skip64
+\f@ncyO@olf=\skip65
+\f@ncyO@orf=\skip66
 )
 (./assignment_3 (3).aux)
 \openout1 = `"assignment_3 (3).aux"'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for FML/futm/m/it on input line 70.
-LaTeX Font Info:    Try loading font information for FML+futm on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for FML/futm/m/it on input line 71.
+LaTeX Font Info:    Try loading font information for FML+futm on input line 71.
 
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fourier/fmlfutm.fd
 File: fmlfutm.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futm.
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for FMS/futm/m/n on input line 70.
-LaTeX Font Info:    Try loading font information for FMS+futm on input line 70.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for FMS/futm/m/n on input line 71.
+LaTeX Font Info:    Try loading font information for FMS+futm on input line 71.
 
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fourier/fmsfutm.fd
 File: fmsfutm.fd 2004/10/30 Fontinst v1.926 font definitions for FMS/futm.
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for FMX/futm/m/n on input line 70.
-LaTeX Font Info:    Try loading font information for FMX+futm on input line 70.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for FMX/futm/m/n on input line 71.
+LaTeX Font Info:    Try loading font information for FMX+futm on input line 71.
 
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fourier/fmxfutm.fd
 File: fmxfutm.fd futm-extension
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 70.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 71.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 71.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Try loading font information for T1+futs on input line 70.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Try loading font information for T1+futs on input line 71.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fourier/t1futs.fd
 File: t1futs.fd 2004/03/02 Fontinst v1.926 font definitions for T1/futs.
 )
-LaTeX Font Info:    Try loading font information for T1+cmss on input line 73.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
+LaTeX Info: Redefining \subref on input line 71.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Try loading font information for T1+cmss on input line 74.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1cmss.fd
 File: t1cmss.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    Try loading font information for FML+futmi on input line 73
+LaTeX Font Info:    Try loading font information for FML+futmi on input line 74
 .
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fourier/fmlfutmi.fd
 File: fmlfutmi.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futmi.
 )
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 13.24796pt on input line 73.
+(Font)              scaled to size 13.24796pt on input line 74.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 9.19998pt on input line 73.
+(Font)              scaled to size 9.19998pt on input line 74.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.35999pt on input line 73.
+(Font)              scaled to size 7.35999pt on input line 74.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 13.24796pt on input line 73.
+(Font)              scaled to size 13.24796pt on input line 74.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 9.19998pt on input line 73.
+(Font)              scaled to size 9.19998pt on input line 74.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.35999pt on input line 73.
-LaTeX Font Info:    Try loading font information for U+msa on input line 73.
+(Font)              scaled to size 7.35999pt on input line 74.
+LaTeX Font Info:    Try loading font information for U+msa on input line 74.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 73.
+LaTeX Font Info:    Try loading font information for U+msb on input line 74.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 80.
+(Font)              scaled to size 10.07397pt on input line 81.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 80.
+(Font)              scaled to size 7.63599pt on input line 81.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 80.
+(Font)              scaled to size 5.51999pt on input line 81.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 80.
+(Font)              scaled to size 10.07397pt on input line 81.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 80.
+(Font)              scaled to size 7.63599pt on input line 81.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 80.
+(Font)              scaled to size 5.51999pt on input line 81.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 8.27998pt on input line 80.
+(Font)              scaled to size 8.27998pt on input line 81.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 6.99199pt on input line 80.
+(Font)              scaled to size 6.99199pt on input line 81.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 8.27998pt on input line 80.
+(Font)              scaled to size 8.27998pt on input line 81.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 6.99199pt on input line 80.
+(Font)              scaled to size 6.99199pt on input line 81.
 
-Underfull \hbox (badness 10000) in paragraph at lines 80--87
+Underfull \hbox (badness 10000) in paragraph at lines 81--88
 
  []
 
 
-Overfull \hbox (4.71997pt too wide) in paragraph at lines 80--87
+Overfull \hbox (4.71997pt too wide) in paragraph at lines 81--88
 \T1/futs/m/n/10.95 Unlike other ma-jor sport's Hall of Fames where sportswriter
  vot-ers openly de-bate their choices,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 80--87
+Underfull \hbox (badness 10000) in paragraph at lines 81--88
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 80--87
+Underfull \hbox (badness 10000) in paragraph at lines 81--88
 
  []
 
@@ -526,124 +565,152 @@ Underfull \hbox (badness 10000) in paragraph at lines 80--87
 
 
 {/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for TS1+futs on input line 101
+LaTeX Font Info:    Try loading font information for TS1+futs on input line 102
 .
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/fourier/ts1futs.fd
 File: ts1futs.fd 2004/03/26 Fontinst v1.926 font definitions for TS1/futs.
 )
-Overfull \hbox (61.0943pt too wide) in paragraph at lines 98--119
+Overfull \hbox (61.0943pt too wide) in paragraph at lines 99--120
 [][] 
  []
 
 LaTeX Font Info:    Font shape `T1/futs/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/futs/b/n' tried instead on input line 120.
+(Font)              Font shape `T1/futs/b/n' tried instead on input line 121.
 
-LaTeX Warning: Citation `hof_guidelines' on page 2 undefined on input line 120.
+LaTeX Warning: Citation `hof_guidelines' on page 2 undefined on input line 121.
 
 
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 126.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 127.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-Underfull \hbox (badness 10000) in paragraph at lines 120--127
+Underfull \hbox (badness 10000) in paragraph at lines 121--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--127
+Underfull \hbox (badness 10000) in paragraph at lines 121--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--127
+Underfull \hbox (badness 10000) in paragraph at lines 121--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--127
+Underfull \hbox (badness 10000) in paragraph at lines 121--128
 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 130--133
+Underfull \hbox (badness 10000) in paragraph at lines 131--134
 
  []
 
-
-Overfull \hbox (1.53268pt too wide) in paragraph at lines 136--137
+[3]
+Overfull \hbox (1.53268pt too wide) in paragraph at lines 137--138
 []$\T1/cmtt/m/n/10.95 http : / / stats . nba . com / stats / commonplayerinfo /
  ?PlayerID = <[]player _ id>[]$ \T1/futs/m/n/10.95 - \T1/futs/m/it/10.95 All-
  []
 
 
-Overfull \hbox (9.11008pt too wide) in paragraph at lines 137--138
+Overfull \hbox (9.11008pt too wide) in paragraph at lines 138--139
 []$\T1/cmtt/m/n/10.95 http : / / stats . nba . com / feeds / players / profile 
 / <[]player _ id >[] _Profile . js$ \T1/futs/m/n/10.95 - \T1/futs/m/it/10.95 Dr
 aft
  []
 
-[3]
-Overfull \hbox (16.56436pt too wide) in paragraph at lines 138--139
+
+Overfull \hbox (16.56436pt too wide) in paragraph at lines 139--140
 []$\T1/cmtt/m/n/10.95 http : / / stats . nba . com / feeds / players / awards /
  <[]player _ id >[] _Award . js$ \T1/futs/m/n/10.95 - \T1/futs/m/it/10.95 Most 
 Valu-
  []
 
 
-LaTeX Warning: Citation `mvp' on page 4 undefined on input line 146.
+LaTeX Warning: Citation `mvp' on page 4 undefined on input line 149.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 142--149
+Underfull \hbox (badness 10000) in paragraph at lines 143--152
 
  []
 
 
-Overfull \hbox (66.46533pt too wide) in paragraph at lines 142--149
+Overfull \hbox (66.46533pt too wide) in paragraph at lines 143--152
 \T1/futs/m/n/10.95 from $\T1/cmtt/m/n/10.95 http : / / www . basketball-[]refer
 ence . com / players / <[]first _ letter _ last _ name >[] /<[]identifier >[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 142--149
+Underfull \hbox (badness 10000) in paragraph at lines 143--152
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 142--149
+Underfull \hbox (badness 10000) in paragraph at lines 143--152
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 143--152
 
  []
 
 [4]
-Underfull \hbox (badness 1430) in paragraph at lines 172--176
+Underfull \hbox (badness 10000) in paragraph at lines 155--158
+
+ []
+
+LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
+(Font)              scaled to size 6.25598pt on input line 162.
+LaTeX Font Info:    Font shape `U/futm/m/n' will be
+(Font)              scaled to size 6.25598pt on input line 162.
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--176
+
+ []
+
+
+LaTeX Warning: Citation `weka_cost' on page 5 undefined on input line 209.
+
+
+Overfull \hbox (21.76749pt too wide) in paragraph at lines 213--239
+ [][] 
+ []
+
+[5] [6]
+Underfull \hbox (badness 1430) in paragraph at lines 266--270
 \T1/futs/m/n/10.95 Re-trieved 1 June 2013 from AOL News: $\T1/cmtt/m/n/10.95 ht
 tp : / / nba . fanhouse . com / 2010 / 03 / 30 /
  []
 
-[5] (./assignment_3 (3).aux)
+[7] (./assignment_3 (3).aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3898 strings out of 493633
- 54062 string characters out of 3143378
- 215818 words of memory out of 3000000
- 7110 multiletter control sequences out of 15000+200000
- 113055 words of font info for 121 fonts, out of 3000000 for 9000
+ 5002 strings out of 493633
+ 73860 string characters out of 3143378
+ 250347 words of memory out of 3000000
+ 8194 multiletter control sequences out of 15000+200000
+ 122030 words of font info for 135 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 35i,10n,47p,1369b,306s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 50i,17n,54p,1365b,477s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
-live/2011/texmf-dist/fonts/type1/adobe/utopia/putb8a.pfb></usr/local/texlive/20
-11/texmf-dist/fonts/type1/adobe/utopia/putr8a.pfb></usr/local/texlive/2011/texm
-f-dist/fonts/type1/adobe/utopia/putri8a.pfb></usr/local/texlive/2011/texmf-dist
-/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on "assignment_3 (3).pdf" (5 pages, 93177 bytes).
+live/2011/texmf-dist/fonts/type1/public/fourier/fourier-ms.pfb></usr/local/texl
+ive/2011/texmf-dist/fonts/type1/adobe/utopia/putb8a.pfb></usr/local/texlive/201
+1/texmf-dist/fonts/type1/adobe/utopia/putr8a.pfb></usr/local/texlive/2011/texmf
+-dist/fonts/type1/adobe/utopia/putri8a.pfb></usr/local/texlive/2011/texmf-dist/
+fonts/type1/public/cm-super/sftt1095.pfb>
+Output written on "assignment_3 (3).pdf" (7 pages, 102763 bytes).
 PDF statistics:
- 38 PDF objects out of 1000 (max. 8388607)
- 26 compressed objects within 1 object stream
+ 50 PDF objects out of 1000 (max. 8388607)
+ 35 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

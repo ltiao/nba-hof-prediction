@@ -240,19 +240,19 @@ fields = [
     #'hall_of_fame'
 ]
 
-weka_players = []
-for p in db_players.find(query):
-    #pprint.pprint(get_nested(p, 'stats.totals'))
-    #if (p['to']-p['from']).days/365 < 1: continue
-    player = [get_nested(p, f) for f in fields]
-    player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
-    player.append(len(get_nested(p, 'honors.championships', [])))
-    player.append(get_nested(p, 'honors.mvpshares', 0))
-    player.append(get_nested(p, 'hall_of_fame'))
-    weka_players.append(player)
-    
-fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
-arff.dump('1951_all.arff', weka_players, relation="nba", names=fields)
+# weka_players = []
+# for p in db_players.find(query):
+#     #pprint.pprint(get_nested(p, 'stats.totals'))
+#     #if (p['to']-p['from']).days/365 < 1: continue
+#     player = [get_nested(p, f) for f in fields]
+#     player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
+#     player.append(len(get_nested(p, 'honors.championships', [])))
+#     player.append(get_nested(p, 'honors.mvpshares', 0))
+#     player.append(get_nested(p, 'hall_of_fame'))
+#     weka_players.append(player)
+#     
+# fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
+# arff.dump('1951_all.arff', weka_players, relation="nba", names=fields)
 
 def parse_probability(weka_output):
     for line in weka_output.splitlines():
@@ -280,16 +280,16 @@ def predict():
         'stats.per_game.ast_per_g.value',
         'stats.per_game.trb_per_g.value',
         'stats.advanced.per.value', 
-        'stats.advanced.ws.value', 
+    #    'stats.advanced.ws.value', 
     ]
     
     query = {
         #'name': 'Jack McCloskey',
-        'hof_probability': {'$exists': False},
+        'new_hof_probability': {'$exists': False},
         'stats.advanced.per': {'$exists': True},
         'stats.advanced.per.complete': True,
-        'stats.advanced.ws': {'$exists': True},
-        'stats.advanced.ws.complete': True,
+    #    'stats.advanced.ws': {'$exists': True},
+    #    'stats.advanced.ws.complete': True,
         'stats.totals.pts': {'$exists': True},
         'stats.totals.pts.complete': True,
         'stats.totals.ast': {'$exists': True},
@@ -303,32 +303,33 @@ def predict():
         'stats.per_game.ast_per_g': {'$exists': True},
         'stats.per_game.ast_per_g.complete': True,
     }
-        
+
     for p in db_players.find(query):
+        logger.info('Player {}'.format(p['name']))
         player = [get_nested(p, f) for f in fields]
         player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
         player.append(len(get_nested(p, 'honors.championships', [])))
         player.append(get_nested(p, 'honors.mvpshares', 0))
         player.append(get_nested(p, 'hall_of_fame'))
         arff.dump('test.arff', [player], relation="nba", names=fields+['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])    
-        raw_output = subprocess.check_output('java -cp /Applications/weka-3-6-9/weka.jar weka.classifiers.functions.RBFNetwork -T test.arff -l NBA_HoF.model -p 0'.split())
+        raw_output = subprocess.check_output('java -cp /Applications/weka-3-6-9/weka.jar weka.classifiers.functions.RBFNetwork -T test.arff -l new.model -p 0'.split())
         prob = parse_probability(raw_output)
         logger.info('Player {name}\'s HOF Probability is {prob}'.format(name = p['name'], prob = prob))
-        db_players.update({'_id': p['_id']}, {"$set":{"hof_probability": prob}}, safe=True, upsert=True)
+        db_players.update({'_id': p['_id']}, {"$set":{"new_hof_probability": prob}}, safe=True, upsert=True)
     
-# #predict()
-# query = {
-#     #'name': 'Larry Foust',
-#     'stats.totals.g.value': {'$gte': 100},    
-#     'hof_probability': {'$gte': 0.4},
-#     'active': True,
-#     'hall_of_fame': False,
-#     'from': {'$gte': datetime.datetime(1951, 1, 1)},
-#     #'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
-# }
-# for p in db_players.find(query).sort("hof_probability", pymongo.DESCENDING):
-#     #pprint.pprint(p)
-#     print p['hof_probability'], p['name']
+#predict()
+query = {
+    'name': 'Rajon Rondo',
+    'stats.totals.g.value': {'$gte': 100},    
+    #'new_hof_probability': {'$gte': 0.4},
+    'active': True,
+    'hall_of_fame': False,
+    'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    #'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
+}
+for p in db_players.find(query).sort("new_hof_probability", pymongo.DESCENDING):
+    #pprint.pprint(p)
+    print p['new_hof_probability'], p['name']
 # 
 # for p in db_players.find({'hall_of_fame': True}):
 #     print (p['to']-p['from']).days/365, p['name']
