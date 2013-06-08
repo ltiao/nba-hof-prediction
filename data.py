@@ -319,7 +319,7 @@ def predict():
     
 #predict()
 query = {
-    'name': 'Rajon Rondo',
+    'name': 'Chris Paul',
     'stats.totals.g.value': {'$gte': 100},    
     #'new_hof_probability': {'$gte': 0.4},
     'active': True,

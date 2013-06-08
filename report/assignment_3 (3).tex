@@ -206,11 +206,11 @@ In table \ref{initial_recall}, we indeed see that the employed learning schemes 
 \end{tabular}
 \end{table}
 
-Table \ref{initial_confusion} shows the confusion matrix for the RBF network model. Further work was done on this model in an effort to minimise the false negatives and thereby increase recall. The first attempt was to optimise the parameters of the model using the \texttt{CVParameterSelection} meta-classifier in Weka, namely, number of clusters, minimum standard deviation for the clusters, and the random seed to be used by $k$-means. Additionally, I tried to use Weka's feature selection options to either eliminate features that yielded little information gain, or otherwise transform the possibly correlated features into linearly uncorrelated variables features using principle component analyses. Unfortunately, these efforts were mostly in vain, as these had little to no effect on the predictive accuracy of the model or its ability to correctly classify positive instances. Some minor improvements where obtained, however, with a cost-sensitive meta-classifiers using two different methods: reweighting training instances according to the total cost assigned to each class and predicting the class with minimum expected misclassification cost\cite{weka_cost}. The respective results of which can be seen in table \ref{cost_sensitive_confusion}.
+Table \ref{initial_confusion} shows the confusion matrix for the RBF network model. Optimisations were performed on this model \footnote{There was no reason why the other learning schemes could not have been optimised as well. Radial Basis Function networks seemed especially appealing and promising due to the results achieved in solving the problem for the baseball Hall of Fame.} in an effort to minimise the false negatives and thereby increase recall. The first attempt was to optimise the parameters of the model using the \texttt{CVParameterSelection} meta-classifier in Weka, namely, number of clusters, minimum standard deviation for the clusters, and the random seed to be used by $k$-means clustering. Additionally, I tried to use Weka's feature selection options to either eliminate features that yielded little information gain, or otherwise transform the possibly correlated features into linearly uncorrelated features using principle component analysis. Unfortunately, these efforts were mostly in vain, as these had little to no effect on the predictive accuracy of the model or its ability to correctly classify positive instances. Some minor improvements where obtained, however, with a cost-sensitive meta-classifiers using two different methods: reweighting training instances according to the total cost assigned to each class and predicting the class with minimum expected misclassification cost\cite{weka_cost}. The respective results of which can be seen in table \ref{cost_sensitive_confusion}. Note the overall predictive accuracy remained practically unchanged at around 97\%.
 \begin{table}[thb]
 \centering
 \caption{\label{cost_sensitive_confusion}Confusion Matrix}
-\begin{tabular}{ccc}
+\begin{tabular}{ll}
 \subfloat[reweighted training instances]{\begin{tabular}{l|l|c|c|c}
 \multicolumn{2}{c}{}&\multicolumn{2}{c}{Predicted}&\\
 \cline{3-4}
@@ -238,7 +238,8 @@ Table \ref{initial_confusion} shows the confusion matrix for the RBF network mod
 \end{tabular}
 \end{table}
 
-This was a good improvement, but I wanted to see if further advances could be made. Unfortunately, as mentioned in the data preparation section, this initial experiment only used the very basic set of features and more features were required at this point to make progress on this problem. 
+This was a good improvement, but I wanted to see if further advances could be made. Unfortunately, as mentioned in the data preparation section, this initial experiment only used the very basic set of features and more features were required at this point to make progress on this problem.\\
+\\
 
 \subsection{Predictions}
 
