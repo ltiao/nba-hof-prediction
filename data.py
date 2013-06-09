@@ -321,16 +321,25 @@ def predict():
 query = {
     #'name': 'Chris Paul',
     'stats.totals.g.value': {'$gt': 100},    
-    'new_hof_probability': {'$gte': 0.5},
-    'active': False,
-    'hall_of_fame': True,
-    'from': {'$gte': datetime.datetime(1951, 1, 1)},
-    'to': {'$lt': datetime.datetime.now() - datetime.timedelta(days=5*365)},
+    'new_hof_probability': {'$gte': 0.05},
+    #'active': True,
+    'hall_of_fame': False,
+    #'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    'to': {'$gt': datetime.datetime.now() - datetime.timedelta(days=5*365)},
 }
-for p in db_players.find(query).sort("new_hof_probability", pymongo.DESCENDING):
+
+for p in db_players.find(query).sort([('new_hof_probability', pymongo.DESCENDING), ('stats.advanced.per.value', pymongo.DESCENDING)]):
     #pprint.pprint(p)
-    print p['new_hof_probability'], p['name']
+    #p['honors']['allstar_appearances'] = len(get_nested(p, 'honors.allstar_appearances', []))
+    #p['honors']['championships'] = len(get_nested(p, 'honors.championships', []))
+    #p['honors']['mvpshares'] = get_nested(p, 'honors.mvpshares', 0)
     
+    if p['new_hof_probability'] >= 0.5:
+        print '\\textbf{{{name}}} & {new_hof_probability} & {stats[totals][pts][value]} & {stats[totals][ast][value]} & {stats[totals][trb][value]} & {stats[per_game][pts_per_g][value]} & {stats[per_game][ast_per_g][value]} & {stats[per_game][trb_per_g][value]} & {stats[advanced][per][value]} \\\\'.format(**p)
+    else:
+        print '{name} & {new_hof_probability} & {stats[totals][pts][value]} & {stats[totals][ast][value]} & {stats[totals][trb][value]} & {stats[per_game][pts_per_g][value]} & {stats[per_game][ast_per_g][value]} & {stats[per_game][trb_per_g][value]} & {stats[advanced][per][value]} \\\\'.format(**p)
+        
+        
 print db_players.find(query).count()
 # 
 # for p in db_players.find({'hall_of_fame': True}):

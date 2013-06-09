@@ -148,7 +148,7 @@ The upside of this was that unlike the official NBA stats portal where it was ne
 \\
 Furthermore, the Most Valuable Player Award data is expressed in terms of cumulative award shares for the player's career, which is calculated by the number of points a player received for a particular award over the total points of all first-place votes\cite{mvp} - far more useful than merely the raw number of MVP awards in the case of players such as Jason Kidd, who has never won the award but has been a serious contender in many seasons due to his stellar performance.\\
 \\
-Both of the aforementioned datasets have been saved in the ubiquitous \textit{JSON} format and is included with the submission files. Both datasets can also be parsed into Weka's \textit{ARFF} or vectorised to work with the Python machine learning library \textit{scikit-learn} with the provided scripts.
+Both of the aforementioned datasets have included in the submission files in the \textit{JSON} format and can also be parsed into Weka's \textit{ARFF} format or vectorised into a \textit{numpy} array to work with the Python machine learning library \textit{scikit-learn} using the scripts included.
 
 \subsection{Training the Model}
 
@@ -170,7 +170,7 @@ Initial NBA Data & 98.08 & $\pm$ & 0.83 & 97.79 & $\pm$ & 1.01 &         & 97.83
 \end{tabular} \scriptsize \par}
 \end{table}
 
-The suspiciously (and somewhat deceptively) good predictive accuracy attained by these learning schemes might be explained by the skewness of the training set toward negative examples. Indeed, the prestigious honour of enshrinement into the Hall of Fame is only bestowed upon a very select few individuals - 80 out of the 1875 players (4.2\%)  in the training set (in fact one could attain 95.8\% predictive accuracy simply by classifying all instances as negative!).\\
+The suspiciously (and somewhat deceptively) good predictive accuracy attained by these learning schemes might be explained by the unquestionable skewness of the training set toward negative examples. Indeed, the prestigious honour of enshrinement into the Hall of Fame is only bestowed upon a very select few individuals - 80 out of the 1875 players (4.2\%)  in the training set (in fact one could attain 95.8\% predictive accuracy simply by classifying all instances as negative!).\\
 \\
 Consequently, it was necessary to consider other cost-sensitive metrics to evaluate the performance of the learning schemes, the key one being \textit{recall}.
 
@@ -402,14 +402,159 @@ The ROC curve of the RBF Network model is depicted in \ref{rbf_roc} with an area
 \pagebreak
 
 \section{Predictions}
-Using the predictive model developed in the previous section, it would be interesting for practical purposes to apply domain knowledge to reason about the misclassifications made by the model and also to analyse the generalisation power of the model by evaluating it on active or recently retired players.
+Using the predictive model developed in the previous section, it would be interesting for practical purposes to apply domain knowledge to reason about the misclassifications made by the model and also to analyse the generalisation power of the model by evaluating it on active or recently retired players.\\
+\\
+Table \ref{hall_of_fame} shows some of the Hall of Fame members with all the members misclassified as nonmembers bolded. A few of these false negatives can be justified by players with relatively short but illustrious careers or short lives in extreme cases, as is the case with Drazen Petrovic died at age 28 and was posthumously honoured by the Hall.\\
+\\
+In the book titled \textit{The Book of Basketball} by influential sports columnist Bill Simmons, wherein almost 400 pages are devoted to analysing the Hall of Fame, Simmons breaks down the Hall of Fame into five levels, with level one being the "just-made-it" Hall of Famers: either "having a great career but not long enough", "very good for a long time but never great" and also "memorable career but never won anything". All players that fall into this category are listed by Simmons and many of the members misclassified as nonmembers are on this list: Gail Goodrich, Connie Hawkins, Arvydas Sabonis, Jack Tywman, Chris Mullin, Joe Dumars, Earl Monroe, just to name a few.\\
+\\
+Such is the case with players not in the Hall of Fame, in table \ref{not_hall_of_fame} (only shows players with HOF probability above 5\%). Many of the nonmembers of the Hall of Fame misclassified as members fall into level one: Robert Horry, Sidney Moncrief, Chris Webber, Shawn Kemp, Kevin Johnson - again, just to name a few. Not also that a large number of these "false positives" are in fact bound for the Hall of Fame, but have yet to be inducted. By way of example, \textit{Not in Hall of Fame} is a site "dedicated to promoting those who have achieved levels of excellence deserving of the Hall of Fame". A look at the top players listed as eligible for the enshrinement class of 2014 (\url{http://www.notinhalloffame.com/basketball/the-basketball-futures/2014-basketball-eligibles}), we indeed see players like Alonzo Mourning, Anfernee Hardaway, Chris Webber at the top of the list.\\
+\\
+The model was evaluated on active or recently retired players, the result of which is shown in table \ref{active} (only those with probability greater than 5\%). Simmons also lists active and recently retired players in the respective levels and a quick cross-reference finds most of the players with high probability of enshrinement on this list. However, here is where some faults of the model become apparent. In Simmons's system (or pyramid, as he calls it), the top level of the pyramid which consists of "twelve greatest players of all-time, the best of the best" includes an active and recently retired player - the great Tim Duncan and Shaquille O'Neal, both of whom have 100\% probability of Hall of Fame enshrinement. However, table \ref{active} shows 14 other players who also have 100\% probability, some of whom are "level one" players at best. Additionally, for active players, this model really answers the question of how likely they are to be inducted into the Hall of Fame in the future if they were to hypothetically retire \textit{today}. As such, a player like Dwight Howard with 100\% probability of induction might outrage some fans. For prediction of the outcome, this model might be fine, but for a realistic assessment of the likelihood of the prediction, this might not be. One might incorporate a quadratic loss function or information loss function to more precisely assess this.
+
+\begin{table}[thb]
+\centering
+\caption{\label{hall_of_fame}Hall of Fame Members}
+\begin{tabular}{l*{7}{c}r}
+Name              & Probability & PTS & AST & REB & PPG  & APG & RPG & PER \\
+\hline
+Michael Jordan & 1.0 & 32292 & 5633 & 6672 & 30.1 & 5.3 & 6.2 & 27.9 \\
+David Robinson & 1.0 & 20790 & 2441 & 10497 & 21.1 & 2.5 & 10.6 & 26.2 \\
+Wilt Chamberlain & 1.0 & 31419 & 4643 & 23924 & 30.1 & 4.4 & 22.9 & 26.1 \\
+Bob Pettit & 1.0 & 20880 & 2369 & 12849 & 26.4 & 3.0 & 16.2 & 25.3 \\
+Kareem Abdul-Jabbar & 1.0 & 38387 & 5660 & 17440 & 24.6 & 3.6 & 11.2 & 24.6 \\
+Charles Barkley & 1.0 & 23757 & 4215 & 12546 & 22.1 & 3.9 & 11.7 & 24.6 \\
+Magic Johnson & 1.0 & 17707 & 10141 & 6559 & 19.5 & 11.2 & 7.2 & 24.1 \\
+Karl Malone & 1.0 & 36928 & 5248 & 14968 & 25.0 & 3.6 & 10.1 & 23.9 \\
+Julius Erving & 1.0 & 30026 & 5176 & 10525 & 24.2 & 4.2 & 8.5 & 23.6 \\
+Hakeem Olajuwon & 1.0 & 26946 & 3058 & 13748 & 21.8 & 2.5 & 11.1 & 23.6 \\
+Larry Bird & 1.0 & 21791 & 5695 & 8974 & 24.3 & 6.3 & 10.0 & 23.5 \\
+\multicolumn{9}{c}{\vdots}\\
+\textbf{Dennis Johnson} & 0.485 & 15535 & 5499 & 4249 & 14.1 & 5.0 & 3.9 & 14.6 \\
+\textbf{Gail Goodrich} & 0.421 & 19181 & 4805 & 3279 & 18.6 & 4.7 & 3.2 & 16.7 \\
+\textbf{Chris Mullin} & 0.368 & 17911 & 3450 & 4034 & 18.2 & 3.5 & 4.1 & 18.8 \\
+\textbf{Joe Dumars} & 0.31 & 16401 & 4612 & 2203 & 16.1 & 4.5 & 2.2 & 15.3 \\
+\textbf{Connie Hawkins} & 0.309 & 11528 & 2556 & 5450 & 18.7 & 4.1 & 8.8 & 19.9 \\
+\textbf{Jack Twyman} & 0.298 & 15840 & 1861 & 5424 & 19.2 & 2.3 & 6.6 & 17.8 \\
+\textbf{Richie Guerin} & 0.192 & 14676 & 4211 & 4278 & 17.3 & 5.0 & 5.0 & 17.3 \\
+\textbf{Gus Johnson} & 0.071 & 10243 & 1603 & 7624 & 16.2 & 2.5 & 12.1 & 16.7 \\
+\textbf{Earl Monroe} & 0.038 & 17454 & 3594 & 2796 & 18.8 & 3.9 & 3.0 & 17.2 \\
+\textbf{Roger Brown} & 0.035 & 10498 & 2315 & 3758 & 17.4 & 3.8 & 6.2 & 17.2 \\
+\textbf{Jamaal Wilkes} & 0.032 & 14644 & 2050 & 5117 & 17.7 & 2.5 & 6.2 & 16.5 \\
+\textbf{Calvin Murphy} & 0.024 & 17949 & 4402 & 2103 & 17.9 & 4.4 & 2.1 & 18.0 \\
+\textbf{Arvydas Sabonis} & 0.021 & 5629 & 964 & 3436 & 12.0 & 2.1 & 7.3 & 21.2 \\
+\textbf{Ralph Sampson} & 0.021 & 7039 & 1038 & 4011 & 15.4 & 2.3 & 8.8 & 16.0 \\
+\textbf{Tom Gola} & 0.021 & 7871 & 2962 & 5617 & 11.3 & 4.2 & 8.0 & 14.1 \\
+\textbf{Bill Bradley} & 0.021 & 9217 & 2533 & 2354 & 12.4 & 3.4 & 3.2 & 12.2 \\
+\textbf{Drazen Petrovic} & 0.009 & 4461 & 701 & 669 & 15.4 & 2.4 & 2.3 & 16.4 \\
+\textbf{Bob Houbregs} & 0.001 & 2611 & 500 & 1552 & 9.3 & 1.8 & 5.5 & 17.0 \\
+\end{tabular}
+\end{table}
+
+\begin{table}[thb]
+\centering
+\caption{\label{not_hall_of_fame}Hall of Fame Nonmembers}
+\begin{tabular}{l*{7}{c}r}
+Name              & Probability & PTS & AST & REB & PPG  & APG & RPG & PER \\
+\hline
+\textbf{Alonzo Mourning} & 0.777 & 14311 & 946 & 7137 & 17.1 & 1.1 & 8.5 & 21.2 \\
+\textbf{George McGinnis} & 0.738 & 17009 & 3089 & 9233 & 20.2 & 3.7 & 11.0 & 20.0 \\
+\textbf{Chris Webber} & 0.734 & 17182 & 3526 & 8124 & 20.7 & 4.2 & 9.8 & 20.9 \\
+\textbf{Jack Sikma} & 0.676 & 17287 & 3488 & 10816 & 15.6 & 3.2 & 9.8 & 17.3 \\
+\textbf{Tim Hardaway} & 0.672 & 15373 & 7095 & 2855 & 17.7 & 8.2 & 3.3 & 18.6 \\
+\textbf{Sidney Moncrief} & 0.671 & 11931 & 2793 & 3575 & 15.6 & 3.6 & 4.7 & 18.7 \\
+\textbf{Tom Sanders} & 0.671 & 8766 & 1026 & 5798 & 9.6 & 1.1 & 6.3 & 11.9 \\
+\textbf{Spencer Haywood} & 0.67 & 17111 & 1541 & 8675 & 20.3 & 1.8 & 10.3 & 19.1 \\
+\textbf{Anfernee Hardaway} & 0.669 & 10684 & 3525 & 3146 & 15.2 & 5.0 & 4.5 & 17.4 \\
+\textbf{Robert Horry} & 0.668 & 7715 & 2343 & 5269 & 7.0 & 2.1 & 4.8 & 13.4 \\
+\textbf{Kevin Johnson} & 0.659 & 13127 & 6711 & 2404 & 17.9 & 9.1 & 3.3 & 20.7 \\
+\textbf{Mitch Richmond} & 0.652 & 20497 & 3398 & 3801 & 21.0 & 3.5 & 3.9 & 17.6 \\
+\textbf{Walter Davis} & 0.647 & 19521 & 3878 & 3053 & 18.9 & 3.8 & 3.0 & 19.1 \\
+\textbf{Mark Jackson} & 0.619 & 12489 & 10334 & 4963 & 9.6 & 8.0 & 3.8 & 16.0 \\
+\textbf{Zelmo Beaty} & 0.601 & 15207 & 1365 & 9665 & 17.1 & 1.5 & 10.9 & 18.7 \\
+\textbf{Shawn Kemp} & 0.566 & 15347 & 1704 & 8834 & 14.6 & 1.6 & 8.4 & 19.1 \\
+\textbf{Terry Cummings} & 0.562 & 19460 & 2190 & 8630 & 16.4 & 1.9 & 7.3 & 18.3 \\
+\textbf{Marques Johnson} & 0.555 & 13892 & 2502 & 4817 & 20.1 & 3.6 & 7.0 & 20.1 \\
+\textbf{Sam Cassell} & 0.507 & 15635 & 5939 & 3221 & 15.7 & 6.0 & 3.2 & 19.5 \\
+Jo Jo White & 0.427 & 14399 & 4095 & 3345 & 17.2 & 4.9 & 4.0 & 14.2 \\
+Ron Harper & 0.362 & 13910 & 3916 & 4309 & 13.8 & 3.9 & 4.3 & 15.6 \\
+Louie Dampier & 0.354 & 15279 & 4687 & 2543 & 15.9 & 4.9 & 2.6 & 15.2 \\
+Lou Hudson & 0.352 & 17940 & 2432 & 3926 & 20.2 & 2.7 & 4.4 & 17.4 \\
+Jim Loscutoff & 0.248 & 3156 & 353 & 2848 & 6.2 & 0.7 & 5.6 & 8.3 \\
+Mark Aguirre & 0.235 & 18458 & 2871 & 4578 & 20.0 & 3.1 & 5.0 & 19.0 \\
+Reggie Theus & 0.217 & 19015 & 6453 & 3349 & 18.5 & 6.3 & 3.3 & 16.6 \\
+Buck Williams & 0.147 & 16784 & 1646 & 13017 & 12.8 & 1.3 & 10.0 & 15.3 \\
+Gus Williams & 0.124 & 14093 & 4597 & 2222 & 17.1 & 5.6 & 2.7 & 18.5 \\
+Mark Price & 0.119 & 10989 & 4863 & 1848 & 15.2 & 6.7 & 2.6 & 19.6 \\
+Rod Strickland & 0.102 & 14463 & 7987 & 4084 & 13.2 & 7.3 & 3.7 & 18.0 \\
+Brad Daugherty & 0.089 & 10389 & 2028 & 5227 & 19.0 & 3.7 & 9.5 & 18.9 \\
+Maurice Lucas & 0.067 & 14857 & 2498 & 9306 & 14.6 & 2.4 & 9.1 & 16.2 \\
+Maurice Cheeks & 0.061 & 12195 & 7392 & 3088 & 11.1 & 6.7 & 2.8 & 16.5 \\
+Horace Grant & 0.056 & 12996 & 2575 & 9443 & 11.2 & 2.2 & 8.1 & 16.0 \\
+Bill Laimbeer & 0.053 & 13790 & 2184 & 10400 & 12.9 & 2.0 & 9.7 & 16.1 \\
+Tom Chambers & 0.052 & 20049 & 2283 & 6703 & 18.1 & 2.1 & 6.1 & 16.5 \\
+Charlie Scott & 0.051 & 14837 & 3515 & 2846 & 20.7 & 4.9 & 4.0 & 15.8 \\
+Paul Westphal & 0.05 & 12809 & 3591 & 1580 & 15.6 & 4.4 & 1.9 & 19.4 \\
+\end{tabular}
+\end{table}
+
+\begin{table}[thb]
+\centering
+\caption{\label{active}Active or recently retired players}
+\begin{tabular}{l*{7}{c}r}
+Name              & Probability & PTS & AST & REB & PPG  & APG & RPG & PER \\
+\hline
+\textbf{LeBron James} & 1.0 & 21081 & 5302 & 5553 & 27.6 & 6.9 & 7.3 & 27.6 \\
+\textbf{Shaquille O'Neal} & 1.0 & 28596 & 3026 & 13099 & 23.7 & 2.5 & 10.9 & 26.4 \\
+\textbf{Chris Paul} & 1.0 & 10311 & 5449 & 2426 & 18.6 & 9.8 & 4.4 & 25.5 \\
+\textbf{Dwyane Wade} & 1.0 & 16453 & 4049 & 3364 & 24.7 & 6.1 & 5.1 & 25.5 \\
+\textbf{Tim Duncan} & 1.0 & 23785 & 3612 & 13219 & 20.2 & 3.1 & 11.2 & 24.7 \\
+\textbf{Kevin Durant} & 1.0 & 12258 & 1447 & 3153 & 26.6 & 3.1 & 6.8 & 23.6 \\
+\textbf{Dirk Nowitzki} & 1.0 & 25051 & 2923 & 9096 & 22.6 & 2.6 & 8.2 & 23.5 \\
+\textbf{Kobe Bryant} & 1.0 & 31617 & 5887 & 6575 & 25.5 & 4.8 & 5.3 & 23.4 \\
+\textbf{Kevin Garnett} & 1.0 & 25274 & 5224 & 13843 & 19.1 & 3.9 & 10.5 & 23.1 \\
+\textbf{Dwight Howard} & 1.0 & 12731 & 1043 & 9017 & 18.3 & 1.5 & 12.9 & 22.2 \\
+\textbf{Tracy McGrady} & 1.0 & 18381 & 4161 & 5276 & 19.6 & 4.4 & 5.6 & 22.1 \\
+\textbf{Allen Iverson} & 1.0 & 24368 & 5624 & 3394 & 26.7 & 6.2 & 3.7 & 20.9 \\
+\textbf{Paul Pierce} & 1.0 & 24021 & 4305 & 6651 & 21.8 & 3.9 & 6.0 & 20.6 \\
+\textbf{Vince Carter} & 1.0 & 22223 & 4030 & 5350 & 20.8 & 3.8 & 5.0 & 20.3 \\
+\textbf{Steve Nash} & 1.0 & 17285 & 10249 & 3613 & 14.4 & 8.5 & 3.0 & 20.0 \\
+\textbf{Ray Allen} & 1.0 & 23804 & 4218 & 5067 & 19.4 & 3.4 & 4.1 & 18.8 \\
+\textbf{Jason Kidd} & 0.999 & 17529 & 12091 & 8725 & 12.6 & 8.7 & 6.3 & 17.9 \\
+\textbf{Carmelo Anthony} & 0.855 & 17846 & 2181 & 4551 & 25.0 & 3.1 & 6.4 & 20.8 \\
+\textbf{Chris Bosh} & 0.715 & 13970 & 1485 & 6370 & 19.5 & 2.1 & 8.9 & 20.8 \\
+\textbf{Amar'e Stoudemire} & 0.691 & 14242 & 944 & 5761 & 21.3 & 1.4 & 8.6 & 22.2 \\
+\textbf{Yao Ming} & 0.686 & 9247 & 769 & 4494 & 19.0 & 1.6 & 9.2 & 23.0 \\
+\textbf{Grant Hill} & 0.678 & 17137 & 4252 & 6169 & 16.7 & 4.1 & 6.0 & 19.0 \\
+\textbf{Derrick Rose} & 0.671 & 5858 & 1911 & 1071 & 21.0 & 6.8 & 3.8 & 19.9 \\
+\textbf{Tony Parker} & 0.671 & 14917 & 5247 & 2645 & 17.1 & 6.0 & 3.0 & 19.1 \\
+\textbf{Chauncey Billups} & 0.671 & 15730 & 5594 & 2964 & 15.4 & 5.5 & 2.9 & 19.0 \\
+\textbf{Jermaine O'Neal} & 0.671 & 12960 & 1344 & 7019 & 13.4 & 1.4 & 7.3 & 18.0 \\
+\textbf{Dikembe Mutombo} & 0.665 & 11729 & 1240 & 12359 & 9.8 & 1.0 & 10.3 & 17.2 \\
+\textbf{Pau Gasol} & 0.661 & 15535 & 2780 & 7756 & 18.4 & 3.3 & 9.2 & 21.6 \\
+Stephon Marbury & 0.482 & 16297 & 6471 & 2516 & 19.3 & 7.6 & 3.0 & 18.7 \\
+Shawn Marion & 0.387 & 16633 & 2023 & 9402 & 16.1 & 2.0 & 9.1 & 19.4 \\
+Blake Griffin & 0.364 & 4653 & 821 & 2368 & 20.4 & 3.6 & 10.4 & 22.5 \\
+Elton Brand & 0.242 & 16242 & 2070 & 8516 & 17.4 & 2.2 & 9.1 & 21.0 \\
+Deron Williams & 0.148 & 10386 & 5241 & 1877 & 17.8 & 9.0 & 3.2 & 19.3 \\
+Andre Miller & 0.13 & 15496 & 7956 & 4461 & 13.8 & 7.1 & 4.0 & 17.7 \\
+Kevin Love & 0.1 & 4979 & 557 & 3490 & 17.3 & 1.9 & 12.2 & 22.1 \\
+Joe Johnson & 0.1 & 15927 & 3948 & 3698 & 17.6 & 4.4 & 4.1 & 16.3 \\
+Manu Ginobili & 0.091 & 10819 & 2892 & 2839 & 14.9 & 4.0 & 3.9 & 21.6 \\
+Antawn Jamison & 0.066 & 19958 & 1754 & 8102 & 18.8 & 1.7 & 7.6 & 18.2 \\
+Peja Stojakovic & 0.056 & 13647 & 1408 & 3782 & 17.0 & 1.8 & 4.7 & 17.1 \\
+\end{tabular}
+\end{table}
 
 \section{Conclusion}
 
-\begin{appendix}
-\section{Appendix}
+Using a Radial Basis Function Network model and by optimising its parameters and training set, a good level of predictive accuracy (97.86\%) was obtained. Using domain knowledge, the performance of the model was also assessed subjectively and found it yielded accurate outcome predictions. However, when it comes to a realistic assessment of the likelihood of the prediction, the model was poor at yielding probabilities that accurately reflected the class membership probability.
 
-\end{appendix}
+\section{Further Work}
+
+Some further work and lines of inquiry not yet investigated includes training a separate model for each position, to account for the unquestionable positional factor involved, or perhaps just a model for likely geographic position of the court, e.g. guards predominantly occupy the backcourt while forwards and centres for the most part occupy the front court. As such, point guards aren't likely to be inducted for their rebounding prowess, so this feature might be excluded when training the model for backcourt players.\\
+\\
+For active players, specifically young but dominant players, the model might not accurate reflect their dominance due to their lack of experience. This might be remedied by training a model specific to their experience in the league, say 3 years, so the training set could include statistics of players for up to only their first 3 years in the league.    
 
 \begin{thebibliography}{9}
 
