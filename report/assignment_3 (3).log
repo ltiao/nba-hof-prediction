@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  9 JUN 2013 02:36
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.7.3)  9 JUN 2013 17:50
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -409,13 +409,41 @@ Package caption Info: KOMA-Script document class.
 \sf@top=\skip56
 \sf@bottom=\skip57
 )
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/message (HO)
+)
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/04/18 v1.20 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count109
+))
+\Gin@req@height=\dimen121
+\Gin@req@width=\dimen122
+)
 (/usr/local/texlive/2011/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
 )
 (/usr/local/texlive/2011/texmf-dist/tex/latex/lipsum/lipsum.sty
 Package: lipsum 2011/04/14 v1.2 150 paragraphs of Lorem Ipsum dummy text
-\c@lips@count=\count109
+\c@lips@count=\count110
 )
 (/usr/local/texlive/2011/texmf-dist/tex/latex/sectsty/sectsty.sty
 Package: sectsty 2002/02/25 v2.0.2 Commands to change all sectional heading sty
@@ -487,6 +515,67 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
 LaTeX Info: Redefining \subref on input line 71.
 Package caption Info: End \AtBeginDocument code.
+
+(/usr/local/texlive/2011/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count111
+\scratchdimen=\dimen123
+\scratchbox=\box29
+\nofMPsegments=\count112
+\nofMParguments=\count113
+\everyMPshowfont=\toks26
+\MPscratchCnt=\count114
+\MPscratchDim=\dimen124
+\MPnumerator=\count115
+\makeMPintoPDFobject=\count116
+\everyMPtoPDFconversion=\toks27
+) (/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/04/22 v0.16 Utilities of pdfTeX for LuaTeX (HO)
+
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Managing graphics extensions (HO)
+
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Defining keys (HO)
+))
+(/usr/local/texlive/2011/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2010/12/23 v3.10 Keyval support for LaTeX options (HO)
+
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2011/04/07 v1.13 Key value parser (HO)
+
+(/usr/local/texlive/2011/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Prefix for e-TeX command names (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2011/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
 LaTeX Font Info:    Try loading font information for T1+cmss on input line 74.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/base/t1cmss.fd
@@ -673,8 +762,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 173--176
 
  []
 
+[5]
 
-LaTeX Warning: Citation `weka_cost' on page 5 undefined on input line 209.
+LaTeX Warning: Citation `weka_cost' on page 6 undefined on input line 209.
 
 
 Overfull \hbox (21.7675pt too wide) in paragraph at lines 213--239
@@ -687,32 +777,37 @@ Overfull \hbox (14.9686pt too wide) in paragraph at lines 209--240
 e model us-ing the \T1/cmtt/m/n/10.95 CVParameterSelection
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 241--243
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--244
 
  []
 
+[6] [7] <ROC.pdf, id=30, 845.1575pt x 597.23125pt>
+File: ROC.pdf Graphic file (type pdf)
+ <use ROC.pdf>
+Package pdftex.def Info: ROC.pdf used on input line 393.
+(pdftex.def)             Requested size: 292.7776pt x 206.8925pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 241--243
+Underfull \hbox (badness 10000) in paragraph at lines 387--395
 
  []
 
-[6]
-Underfull \hbox (badness 1430) in paragraph at lines 267--271
+[8]
+Underfull \hbox (badness 1430) in paragraph at lines 419--423
 \T1/futs/m/n/10.95 Re-trieved 1 June 2013 from AOL News: $\T1/cmtt/m/n/10.95 ht
 tp : / / nba . fanhouse . com / 2010 / 03 / 30 /
  []
 
-[7] (./assignment_3 (3).aux)
+[9 <./ROC.pdf>] (./assignment_3 (3).aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 5002 strings out of 493633
- 73860 string characters out of 3143378
- 250347 words of memory out of 3000000
- 8194 multiletter control sequences out of 15000+200000
+ 6286 strings out of 493633
+ 93713 string characters out of 3143378
+ 261207 words of memory out of 3000000
+ 9418 multiletter control sequences out of 15000+200000
  122030 words of font info for 135 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
  50i,17n,54p,1656b,479s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -723,10 +818,10 @@ ive/2011/texmf-dist/fonts/type1/adobe/utopia/putb8a.pfb></usr/local/texlive/201
 1/texmf-dist/fonts/type1/adobe/utopia/putr8a.pfb></usr/local/texlive/2011/texmf
 -dist/fonts/type1/adobe/utopia/putri8a.pfb></usr/local/texlive/2011/texmf-dist/
 fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on "assignment_3 (3).pdf" (7 pages, 103215 bytes).
+Output written on "assignment_3 (3).pdf" (9 pages, 144311 bytes).
 PDF statistics:
- 50 PDF objects out of 1000 (max. 8388607)
- 35 compressed objects within 1 object stream
+ 82 PDF objects out of 1000 (max. 8388607)
+ 58 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

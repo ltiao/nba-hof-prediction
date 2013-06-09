@@ -24,7 +24,7 @@
 \usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
 \usepackage[english]{babel} % English language/hyphenation
 \usepackage{amsmath,amsfonts,amsthm} % Math packages
-\usepackage{multirow, subfig}
+\usepackage{multirow, subfig, graphicx}
 
 
 \usepackage{url}
@@ -152,7 +152,7 @@ Both of the aforementioned datasets have been saved in the ubiquitous JSON forma
 
 \subsection{Training the Model}
 
-In the initial experiment, the original dataset described in the previous section was used and trained on using different learning algorithms with Weka, \textit{Logistic Regression}, \textit{Multilayer Perceptrons}, \textit{Decision Trees} and \textit{Radial Basis Function Networks}, using the default parameters for each respective algorithm.\\
+In the initial experiment, the original dataset described in the previous section was used and trained on using different learning algorithms with Weka, \textit{Logistic Regression}, \textit{Multilayer Perceptrons}, \textit{Decision Trees} and \textit{Radial Basis Function Networks}, using the default parameters for each respective algorithm. To remove irrelevant instances, the dataset filtered out players who played for less than one season, though this might be a poor criterion of relevance, since players who play for many seasons don't play many actual games. Games played were not available in this dataset so could not be filtered accordingly.\\
 \\
 The performance of these algorithms were estimated with 10-fold cross-validation repeated 10 times and the predictive accuracy of models were compared using a paired $t$-test. Surprisingly, the logisitic regression model outperformed all other models, but not by a statistically significant amount, with the exception of the tree learner. As seen in table \ref{initial_results}, the percentage of correct classifications under these data schemes were all estimated to be above 97\%. 
 
@@ -170,7 +170,7 @@ Initial NBA Data & 98.08 & $\pm$ & 0.83 & 97.79 & $\pm$ & 1.01 &         & 97.83
 \end{tabular} \scriptsize \par}
 \end{table}
 
-The suspiciously (and somewhat deceptively) good predictive accuracy attained by these learning schemes might be explained by the skewness of the training set toward negative examples. Indeed, the prestigious honour of enshrinement into the Hall of Fame is only bestowed upon a very select few individuals - 85 out of the 1591 players (4.2\%)  in the training set, so in fact one could attain 95.8\% predictive accuracy simply by classifying all instances as negative!\\
+The suspiciously (and somewhat deceptively) good predictive accuracy attained by these learning schemes might be explained by the skewness of the training set toward negative examples. Indeed, the prestigious honour of enshrinement into the Hall of Fame is only bestowed upon a very select few individuals - 80 out of the 1875 players (4.2\%)  in the training set, so in fact one could attain 95.8\% predictive accuracy simply by classifying all instances as negative!\\
 \\
 Consequently, it is necessary to consider other cost-sensitive metrics to evaluate the performance of the learning schemes, the key one being \textit{recall}.
 
@@ -240,6 +240,158 @@ Table \ref{initial_confusion} shows the confusion matrix for the RBF network mod
 
 This was a good improvement, but I wanted to see if further advances could be made. Unfortunately, as mentioned in the data preparation section, this initial experiment only used the very basic set of features and more features were required at this point to make progress on this problem.\\
 \\
+With the new dataset acquired from Basketball Reference, players who played less than 100 games were filtered out, along with any players who did not have the complete records of their respective statistics. Consequently, the training set consisted of all the features described in the previous section (including the features in the original dataset), with a total of 1591 players and 85 Hall of Fame members. Initial experimentation with this dataset used all of the features in training the new models.
+
+\begin{table}[thb]
+\caption{\label{new_model_percent_correct}Predictive Accuracy (Percent Correct)}
+\scriptsize
+{\centering \begin{tabular}{lr@{\hspace{0cm}}c@{\hspace{0cm}}rr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}cr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}cr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}c}
+\\
+\hline
+Dataset & \multicolumn{3}{c}{Logistic}& \multicolumn{4}{c}{Decision Tree (J48)} & \multicolumn{4}{c}{Multilayer Perceptron} & \multicolumn{4}{c}{RBF Network} \\
+\hline
+Basketball Reference Data & 97.81 & $\pm$ & 1.04 & 97.27 & $\pm$ & 1.17 &         & 97.83 & $\pm$ & 0.98 &         & 97.18 & $\pm$ & 1.11 &        \\
+\hline
+\multicolumn{12}{c}{$\circ$, $\bullet$ statistically significant improvement or degradation}\\
+\end{tabular} \scriptsize \par}
+\end{table}
+
+Again, as shown in table \ref{new_model_percent_correct}, the models were all of comparable predictive accuracy. Upon further inspection, table \ref{new_model_recall} shows RBF Network model yielded higher recall.
+
+\begin{table}[thb]
+\caption{\label{new_model_recall}Recall}
+\scriptsize
+{\centering \begin{tabular}{lr@{\hspace{0cm}}c@{\hspace{0cm}}rr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}cr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}cr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}c}
+\\
+\hline
+Dataset & \multicolumn{3}{c}{Logistic}& \multicolumn{4}{c}{Decision Tree (J48)} & \multicolumn{4}{c}{Multilayer Perceptron} & \multicolumn{4}{c}{RBF Network} \\
+\hline
+Basketball Reference Data & 0.74 & $\pm$ & 0.15 & 0.68 & $\pm$ & 0.16 &         & 0.73 & $\pm$ & 0.15 &         & 0.80 & $\pm$ & 0.13 &        \\
+\hline
+\multicolumn{12}{c}{$\circ$, $\bullet$ statistically significant improvement or degradation}\\
+\end{tabular} \scriptsize \par}
+\end{table}
+
+Table \ref{rbf_confusion} shows the confusion matrix for the RBF network model. As one might expect, though there were relatively low false negatives, the false positives were quite high. Consequently, I sought to strike a good balance between precision and recall using similar approaches taken in the initial experiment. 
+
+\begin{table}[thb]
+\centering
+\caption{\label{rbf_confusion}RBF Network Model - Confusion Matrix}
+\begin{tabular}{lr}
+
+\begin{tabular}{l|l|c|c|c}
+\multicolumn{2}{c}{}&\multicolumn{2}{c}{Predicted}&\\
+\cline{3-4}
+\multicolumn{2}{c|}{}& HOF & not HOF &\multicolumn{1}{c}{Total}\\
+\cline{2-4}
+\multirow{2}{*}{Actual}& HOF & 68 & 17 & 85\\
+\cline{2-4}
+& not HOF & 28 & 1478 & 1506\\
+\cline{2-4}
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{96} & \multicolumn{1}{c}{1495} & \multicolumn{1}{c}{1591}\\
+\end{tabular}
+
+\begin{tabular}{ | l | l | }
+\hline
+  Precision & 0.708 \\
+  Recall & 0.8  \\
+  F-Measure & 0.751 \\
+  Percent Correct & 97.17\%\\
+  \hline
+\end{tabular}
+
+\end{tabular}
+\end{table}
+
+Firstly, by analysing the various new features used, a few of them yielded relatively low information gain, and were thus removed. The features that reduced overall predictive accuracy or had little effect were TS\%, eFG\%, total games played, and the offensive and defensive win shares respectively. Table \ref{rbf_confusion_feature} shows the improvements gained from this.
+
+\pagebreak
+
+\begin{table}[thb]
+\centering
+\caption{\label{rbf_confusion_feature}RBF Network Model (irrelevant features removed) - Confusion Matrix}
+\begin{tabular}{lr}
+
+\begin{tabular}{l|l|c|c|c}
+\multicolumn{2}{c}{}&\multicolumn{2}{c}{Predicted}&\\
+\cline{3-4}
+\multicolumn{2}{c|}{}& HOF & not HOF &\multicolumn{1}{c}{Total}\\
+\cline{2-4}
+\multirow{2}{*}{Actual}& HOF & 67 & 18 & 85\\
+\cline{2-4}
+& not HOF & 20 & 1486 & 1506\\
+\cline{2-4}
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{87} & \multicolumn{1}{c}{1504} & \multicolumn{1}{c}{1591}\\
+\end{tabular}
+
+\begin{tabular}{ | l | l | }
+\hline
+  Precision & 0.77 \\
+  Recall & 0.788  \\
+  F-Measure & 0.779 \\
+  Percent Correct & 97.61\%\\
+  \hline
+\end{tabular}
+
+\end{tabular}
+\end{table}
+
+Finally, I sought to optimise the parameters of the RBF network model. By using 3 as the clustering seed with 2 clusters and the minimum standard deviation of 0.1 in addition to removing the win shares feature, good results were obtained, as depicted in table \ref{final_rbf_confusion}. 
+
+\begin{table}[thb]
+\centering
+\caption{\label{final_rbf_confusion}RBF Network Model (final model) - Confusion Matrix}
+\begin{tabular}{lr}
+
+\begin{tabular}{l|l|c|c|c}
+\multicolumn{2}{c}{}&\multicolumn{2}{c}{Predicted}&\\
+\cline{3-4}
+\multicolumn{2}{c|}{}& HOF & not HOF &\multicolumn{1}{c}{Total}\\
+\cline{2-4}
+\multirow{2}{*}{Actual}& HOF & 68 & 17 & 85\\
+\cline{2-4}
+& not HOF & 17 & 1489 & 1506\\
+\cline{2-4}
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{87} & \multicolumn{1}{c}{1504} & \multicolumn{1}{c}{1591}\\
+\end{tabular}
+
+\begin{tabular}{ | l | l | }
+\hline
+  Precision & 0.8 \\
+  Recall & 0.8  \\
+  F-Measure & 0.8 \\
+  Percent Correct & 97.86\%\\
+  \hline
+\end{tabular}
+
+\end{tabular}
+\end{table}
+
+A comparison of the model's F-measure subject to the variations of parameters of the model and features of the dataset can be seen in table \ref{f_measure}. The overall predictive accuracy across these models remained unchanged.
+
+\begin{table}[thb]
+\caption{\label{f_measure}Table Caption}
+\scriptsize
+{\centering \begin{tabular}{lr@{\hspace{0cm}}c@{\hspace{0cm}}rr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}cr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}c}
+\\
+\hline
+Dataset & \multicolumn{3}{c}{All features}& \multicolumn{4}{c}{Filtered features 1} & \multicolumn{4}{c}{Filtered features 2} \\
+\hline
+RBF Network (default) & 0.75 & $\pm$ & 0.11 & 0.77 & $\pm$ & 0.11 &         & 0.78 & $\pm$ & 0.11 &        \\
+RBF Network (optimised parameters)  & 0.74 & $\pm$ & 0.11 & 0.77 & $\pm$ & 0.11 &         & 0.79 & $\pm$ & 0.10 &        \\
+\hline
+\multicolumn{9}{c}{$\circ$, $\bullet$ statistically significant improvement or degradation}\\
+\end{tabular} \scriptsize \par}
+\end{table}
+
+Evidently, the final model achieved a good balance between precision and recall as a result of optimisations and feature selection. These approaches were experimented on the different learning schemes, logistic regression, tree learning and multilayer perceptrons but none outperformed the RBF network model, even with cost-sensitive classifiers. The learning schemes that did perform well were on par with the RBF network model.\\
+\\
+The ROC curve of the RBF Network model is depicted in \ref{rbf_roc} with the an area of 0.971 under the curve.
+\begin{figure}[thb]
+  \caption{\label{rbf_roc}ROC Curve}
+  \centering
+    \includegraphics[width=0.7\textwidth]{ROC.pdf}
+\end{figure}
 
 \subsection{Predictions}
 
