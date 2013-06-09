@@ -239,20 +239,20 @@ fields = [
     #'stats.totals.g.value', 
     #'hall_of_fame'
 ]
-
-weka_players = []
-for p in db_players.find(query):
-    #pprint.pprint(get_nested(p, 'stats.totals'))
-    #if (p['to']-p['from']).days/365 < 1: continue
-    player = [get_nested(p, f) for f in fields]
-    player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
-    player.append(len(get_nested(p, 'honors.championships', [])))
-    player.append(get_nested(p, 'honors.mvpshares', 0))
-    player.append(get_nested(p, 'hall_of_fame'))
-    weka_players.append(player)
-    
-fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
-arff.dump('minimal.arff', weka_players, relation="nba", names=fields)
+# 
+# weka_players = []
+# for p in db_players.find(query):
+#     #pprint.pprint(get_nested(p, 'stats.totals'))
+#     #if (p['to']-p['from']).days/365 < 1: continue
+#     player = [get_nested(p, f) for f in fields]
+#     player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
+#     player.append(len(get_nested(p, 'honors.championships', [])))
+#     player.append(get_nested(p, 'honors.mvpshares', 0))
+#     player.append(get_nested(p, 'hall_of_fame'))
+#     weka_players.append(player)
+#     
+# fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
+# arff.dump('minimal.arff', weka_players, relation="nba", names=fields)
 
 def parse_probability(weka_output):
     for line in weka_output.splitlines():
@@ -318,18 +318,20 @@ def predict():
         db_players.update({'_id': p['_id']}, {"$set":{"new_hof_probability": prob}}, safe=True, upsert=True)
     
 #predict()
-# query = {
-#     'name': 'Chris Paul',
-#     'stats.totals.g.value': {'$gte': 100},    
-#     #'new_hof_probability': {'$gte': 0.4},
-#     'active': True,
-#     'hall_of_fame': False,
-#     'from': {'$gte': datetime.datetime(1951, 1, 1)},
-#     #'to': {'$lte': datetime.datetime.now() - datetime.timedelta(days=5*365)},
-# }
-# for p in db_players.find(query).sort("new_hof_probability", pymongo.DESCENDING):
-#     #pprint.pprint(p)
-#     print p['new_hof_probability'], p['name']
-# # 
+query = {
+    #'name': 'Chris Paul',
+    'stats.totals.g.value': {'$gt': 100},    
+    'new_hof_probability': {'$gte': 0.5},
+    'active': False,
+    'hall_of_fame': True,
+    'from': {'$gte': datetime.datetime(1951, 1, 1)},
+    'to': {'$lt': datetime.datetime.now() - datetime.timedelta(days=5*365)},
+}
+for p in db_players.find(query).sort("new_hof_probability", pymongo.DESCENDING):
+    #pprint.pprint(p)
+    print p['new_hof_probability'], p['name']
+    
+print db_players.find(query).count()
+# 
 # for p in db_players.find({'hall_of_fame': True}):
 #     print (p['to']-p['from']).days/365, p['name']

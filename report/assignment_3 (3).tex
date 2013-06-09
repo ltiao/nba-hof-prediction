@@ -24,8 +24,8 @@
 \usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
 \usepackage[english]{babel} % English language/hyphenation
 \usepackage{amsmath,amsfonts,amsthm} % Math packages
-\usepackage{multirow, subfig, graphicx}
-
+\usepackage{multirow, subfig, graphicx, adjustbox}
+\usepackage{wrapfig}
 
 \usepackage{url}
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
@@ -84,7 +84,7 @@ Unlike other major sport's Hall of Fames where sportswriter voters openly debate
 \\
 Currently, some popular methods used include the \textit{Keltner List}, a less objective but systematic method adopted from baseball (as many advanced basketball metrics often are) and also a logistic regression model\cite{logregress}, developed by \textit{Basketball Reference}, a site that provides comprehensive basketball statistics. However, no attempts have been made to develop a machine learning model (to the best of my knowledge). Work has been done to solve the same problem in baseball using a Radial Basis Function Network by Smith, Lloyd and Downey, James (2009)\cite{lloyd}, and some of the methods here shall be based upon this.\\
 \\
-In this project, I strive to harness the capabilities and advantages of machine learning methods to build a model with better predictive accuracy than that of the aforementioned methods, by experimenting with various different datasets, features and learning algorithms. This report documents the methods employed, work done to collect and preprocess the data, experimentations involved and analysis of the various results.
+In this project, I strive to harness the capabilities and advantages of machine learning techniques to build a model with better predictive accuracy than that of the aforementioned methods, by experimenting with various different datasets, features and learning algorithms. This report documents the methods employed, work done to collect and preprocess the data, experimentations involved and analysis of the various results.
 
 %----------------------------------------------------------------------------------------
 %	PROBLEM 2
@@ -94,7 +94,7 @@ In this project, I strive to harness the capabilities and advantages of machine 
 
 \subsection{Domain-Specific Features}
 
-In the initial stages of this project, simple basketball statistics were incorporated as features into the training set, alongside other metrics that indicate the relative merit of particular players with respect to other players who played in the league in his time: 
+In the initial stages of this project, simple basketball statistics were incorporated as features into the training set, alongside other metrics that might be indicative of the relative merit of particular players with respect to other players who played in the league during his time: 
 
 \begin{tabular}{p{0.3\textwidth} p{0.26\textwidth}p{0.5\textwidth}}
 
@@ -118,11 +118,11 @@ In the initial stages of this project, simple basketball statistics were incorpo
 
 \end{tabular}
 
-Taking into account the fact that a player must be fully retired for five years before being eligible for induction\cite{hof_guidelines} and that the inaugural NBA All-Star Game took place in 1951, we used data from players who debuted in the league during or after the 1951-52 season and retired before the 2008-09 season. This not only avoids differences in basketball eras but ensures comprehensive statistics for each player (no missing or incomplete features for any instance) since all the above statistics were being recorded in that time period. Other key statistics such as \textit{steals}, \textit{blocks} and \textit{field goal percentage} were not incorporated for this very reason, as many players either did not have these statistics recorded at all or only had it recorded for some seasons. Other metrics like player's \textit{draft pick}, \textit{weight} and \textit{height} were also considered but these failed to improve performance as shall be discussed later.\\ %This was not considered huge drawback as it helped to avoid excessive dimensionality.\\
+Taking into account the fact that a player must be fully retired for five years before being eligible for induction\cite{hof_guidelines} and that the inaugural NBA All-Star Game took place in 1951, we used data from players who debuted in the league during or after the 1951-52 season and retired before the 2008-09 season. This not only avoids differences in basketball eras but ensures comprehensive statistics for each player (no missing or incomplete features for any instance) as all the above statistics were being recorded in that time period. Other key statistics such as \textit{steals}, \textit{blocks} and \textit{field goal percentage} were not incorporated for this very reason, as many players either did not have these statistics recorded at all or only had it recorded for some seasons. Other metrics like player's \textit{draft pick}, \textit{weight} and \textit{height} were also considered but these failed to improve performance.\\ %This was not considered huge drawback as it helped to avoid excessive dimensionality.\\
 \\
-In an effort to improve predictive accuracy on this model built on a relatively small number of features, several advanced basketball statistics were considered. Namely, \textit{win shares}, a metric adopted from baseball that is designed to estimate a player's contribution to his team winning, which is made up of two other metrics, \textit{defensive win shares} and \textit{offensive win shares}, each of which considers a players offensive and defensive contributions respectively. Since it has been said that certain players are inducted into the Hall of Fame based but on their defensive prowess, which may not reflect well on a stat sheet, I decided it would be beneficial to incorporate both defensive and offensive win shares. Another statistic considered was the \textit{Player Efficiency Rating (PER)}, a rather arcane but popular metric which summarises a player's performance and contributions into a one number using a very detailed formula. Finally, the statistics \textit{effective field goal percentage (eFG\%)} and \textit{True Shooting Percentage (TS\%)} were considered, both of which incorporate 3-point and 2-point field goals, the former of which adjusts for the fact that a 3-point field goal is worth one more point than a 2-point field goal and the latter also considers free throw percentage.\\
+In an effort to improve predictive accuracy on this model built on a relatively small number of features, several advanced basketball statistics were considered. Namely, \textit{win shares}\cite{win_share}, a metric adopted from baseball that is designed to estimate a player's contribution to his team's win, which is made up of two other metrics, \textit{defensive win shares} and \textit{offensive win shares}, each of which considers a player's offensive and defensive contributions respectively. Since it has been said that certain players are inducted into the Hall of Fame based but on their defensive prowess, which may not reflect well on a stat sheet, I decided it would be beneficial to incorporate both defensive and offensive win shares. Another statistic considered was the \textit{Player Efficiency Rating (PER)}, a rather arcane but popular metric which summarises a player's performance and contributions into a one number using a very detailed formula\cite{per}. Finally, the statistics \textit{effective field goal percentage (eFG\%)} and \textit{true shooting percentage (TS\%)} were considered, both of which incorporate 3-point and 2-point field goals, the former of which adjusts for the fact that a 3-point field goal is worth one more point than a 2-point field goal and the latter also considers free throw percentage.\\
 \\
-The last metric considered was the number of \textit{NBA Championship Titles} the player has won and the player's \textit{longest stint with any team}. The latter is potentially interesting and valuable as this could serve as an indication that he was a franchise player, an elite status bestowed upon (usually) the best players on their respective teams, whom the franchise is built around. Unfortunately, this was not experimented with due to the difficulty in obtaining this feature but is definitely further work that could be undertaken.\\
+The last metric considered was the number of \textit{NBA Championship Titles} the player has won and the player's \textit{longest stint with any team}. The latter is potentially interesting and valuable as this could serve as an indication that he was a franchise player, an elite status bestowed upon (usually) the best players on their respective teams, whom the franchise is built around. Unfortunately, this was not experimented with due to the difficulty in obtaining this feature.\\
 \\
 As noted earlier, since many statistics were not being recorded prior to the 1973-74 season, we cannot simply incorporate these advanced basketball metrics into our model as most rely on these missing statistics. Luckily, \textit{Basketball Reference} provides a complete system with estimations to account for 	missing statistics in particular eras, the formulae for which are quite detailed. The method for calculating win shares and player efficiency rating can be found at \url{http://www.basketball-reference.com/about/ws.html} and \url{http://www.basketball-reference.com/about/per.html}.\\
 
@@ -130,7 +130,7 @@ As noted earlier, since many statistics were not being recorded prior to the 197
 
 A considerable challenge faced in this project was the absence of a readily available data repository relevant to the problem, so a substantial amount of work was devoted overcoming this by web data extraction (scraping) and parsing data into a format that could be analysed with machine learning software. The documentation of the data collection process is kept as brief as possible since while part of the overall machine learning and data mining process, it has little to do with machine learning itself.\\
 \\
-At first, official NBA stats portal \url{http://stats.nba.com/} seemed like a promising avenue for data collection. However, not only were there no datasets available for download, the site did not provide any APIs. To avoid resorting to scraping the pages, I inspected the source of the site's pages to find ways to access the backend scripts that drove the site's data and was able to find Javascript sources that provided results in a friendly Javascript Object Notation (JSON) format. Since each source only provided a subset of features for the particular player queried, I was required the cross reference these data sources to create a complete set of features for each player. The data sources and the respective features is provides are described below:
+At first, official NBA stats portal \url{http://stats.nba.com/} seemed like a promising avenue for data collection. However, not only were there no datasets available for download, the site did not provide any APIs. To avoid resorting to scraping the pages, I inspected the source of the site's pages to find ways to access the backend scripts that drove the site's data and was able to find Javascript sources that provided results in a friendly Javascript Object Notation (JSON) format. Since each source only provided a subset of features for the particular player queried, I was required to cross reference these data sources to create a complete set of features for each player. The data sources and respective features provided are described below:
 
 \begin{itemize}
 \item \url{http://stats.nba.com/stats/commonallplayers} - \textit{List of all NBA players}
@@ -142,17 +142,17 @@ At first, official NBA stats portal \url{http://stats.nba.com/} seemed like a pr
 
 At this stage of the data collection process, I hadn't conceived of using the advanced statistics described in the previous section, so these features seemed to be enough to get started on preliminary experimentation. This data source obviously failed to yield the number of championship titles, the aforementioned advanced statistics and the full set of simple statistics that were required to calculate complex metrics like the PER. This posed a problem after no further improvements could be obtained with the original dataset and its limited feature space and an alternative data source was required.\\
 \\
-Since Basketball Reference provides all of the aforementioned features, with all of the advanced metrics already calculated (and much more), I finally resorted extracting data from its web pages since there was no API or datasets available for download. The list of players and their respective identifiers were obtained from \url{http://www.basketball-reference.com/players/<first_letter_last_name>} and a players complete profile could be obtained from \url{http://www.basketball-reference.com/players/<first_letter_last_name>/<identifier>.html}. \\
+Since Basketball Reference provides all of the aforementioned features, with all of the advanced metrics already calculated (and much more), I finally resorted extracting data from its web pages since there was no API or datasets available for download. The list of players and their respective identifiers were obtained from \url{http://www.basketball-reference.com/players/<first_letter_last_name>} and a players complete profile could be obtained from \url{http://www.basketball-reference.com/players/<first_letter_last_name>/<identifier>.html}.\\
 \\
-The upside of this was that unlike the official NBA stats portal where it was necessary to piece together data from different sources, it was possible to obtain all the information required from a single page. Using the Python library Beautiful Soup, I was able to extract all the required features for every player. Additional statistics were also obtained in case they were required, such as statistics from Playoff games, All-Star Games, etc. This data source seemed far more comprehensive, and appeared to also include players from the American Basketball Association (ABA), which was later merged with the NBA in 1976. This also meant a larger training set to work with.\\
+The upside of this was that unlike the official NBA stats portal where it was necessary to piece together data from different sources, it was possible to obtain all the information required from a single page. Using the Python library \textit{Beautiful Soup}, I was able to extract all the required features for every player. Additional statistics were also obtained in case they were required, such as statistics from Playoff games, All-Star Games, etc. This data source seemed far more comprehensive, and appeared to also include players from the American Basketball Association (ABA), which was later merged with the NBA in 1976. This also meant a larger training set to work with.\\
 \\
 Furthermore, the Most Valuable Player Award data is expressed in terms of cumulative award shares for the player's career, which is calculated by the number of points a player received for a particular award over the total points of all first-place votes\cite{mvp} - far more useful than merely the raw number of MVP awards in the case of players such as Jason Kidd, who has never won the award but has been a serious contender in many seasons due to his stellar performance.\\
 \\
-Both of the aforementioned datasets have been saved in the ubiquitous JSON format and is included with the submission files. Both datasets can also be parsed into Weka's ARFF or vectorised to work with the Python machine learning library scikit-learn with the provided scripts.
+Both of the aforementioned datasets have been saved in the ubiquitous \textit{JSON} format and is included with the submission files. Both datasets can also be parsed into Weka's \textit{ARFF} or vectorised to work with the Python machine learning library \textit{scikit-learn} with the provided scripts.
 
 \subsection{Training the Model}
 
-In the initial experiment, the original dataset described in the previous section was used and trained on using different learning algorithms with Weka, \textit{Logistic Regression}, \textit{Multilayer Perceptrons}, \textit{Decision Trees} and \textit{Radial Basis Function Networks}, using the default parameters for each respective algorithm. To remove irrelevant instances, the dataset filtered out players who played for less than one season, though this might be a poor criterion of relevance, since players who play for many seasons don't play many actual games. Games played were not available in this dataset so could not be filtered accordingly.\\
+In the initial experiment, the original dataset described in the previous section was used and trained on using different learning algorithms with the popular machine learning workbench \textit{Weka}\cite{weka}: \textit{Logistic Regression}, \textit{Multilayer Perceptrons}, \textit{Decision Trees} and \textit{Radial Basis Function Networks}, using the default parameters for each respective algorithm. To remove irrelevant instances, the dataset filtered out players who played for less than one season (this might be a poor criterion of relevance, since players who play for many seasons don't play many actual games. Games played were not available in this dataset so could not be filtered accordingly).\\
 \\
 The performance of these algorithms were estimated with 10-fold cross-validation repeated 10 times and the predictive accuracy of models were compared using a paired $t$-test. Surprisingly, the logisitic regression model outperformed all other models, but not by a statistically significant amount, with the exception of the tree learner. As seen in table \ref{initial_results}, the percentage of correct classifications under these data schemes were all estimated to be above 97\%. 
 
@@ -170,9 +170,9 @@ Initial NBA Data & 98.08 & $\pm$ & 0.83 & 97.79 & $\pm$ & 1.01 &         & 97.83
 \end{tabular} \scriptsize \par}
 \end{table}
 
-The suspiciously (and somewhat deceptively) good predictive accuracy attained by these learning schemes might be explained by the skewness of the training set toward negative examples. Indeed, the prestigious honour of enshrinement into the Hall of Fame is only bestowed upon a very select few individuals - 80 out of the 1875 players (4.2\%)  in the training set, so in fact one could attain 95.8\% predictive accuracy simply by classifying all instances as negative!\\
+The suspiciously (and somewhat deceptively) good predictive accuracy attained by these learning schemes might be explained by the skewness of the training set toward negative examples. Indeed, the prestigious honour of enshrinement into the Hall of Fame is only bestowed upon a very select few individuals - 80 out of the 1875 players (4.2\%)  in the training set (in fact one could attain 95.8\% predictive accuracy simply by classifying all instances as negative!).\\
 \\
-Consequently, it is necessary to consider other cost-sensitive metrics to evaluate the performance of the learning schemes, the key one being \textit{recall}.
+Consequently, it was necessary to consider other cost-sensitive metrics to evaluate the performance of the learning schemes, the key one being \textit{recall}.
 
 \begin{table}[thb]
 \caption{\label{initial_recall}Recall}
@@ -188,7 +188,7 @@ Initial NBA Data & 0.67 & $\pm$ & 0.16 & 0.70 & $\pm$ & 0.16 &         & 0.65 & 
 \end{tabular} \scriptsize \par}
 \end{table}
  
-In table \ref{initial_recall}, we indeed see that the employed learning schemes did not have high recall, so 30-40\% of actual Hall of Fame members were being misclassified as not being in the Hall of Fame, with the RBF network model yielding the highest recall \footnote{Obviously, it was also important not to now compromise the prestige of the Hall of Fame by classifying instances as positive too liberally.}.
+In table \ref{initial_recall}, we indeed see that the employed learning schemes did not have high recall, so 30-40\% of actual Hall of Fame members were being misclassified as not being in the Hall of Fame, with the RBF network model yielding the highest recall \footnote{Obviously, it was also important not to compromise the prestige of the Hall of Fame by classifying instances as positive too liberally.}.
 
 \begin{table}[thb]
 \centering
@@ -272,7 +272,7 @@ Basketball Reference Data & 0.74 & $\pm$ & 0.15 & 0.68 & $\pm$ & 0.16 &         
 \end{tabular} \scriptsize \par}
 \end{table}
 
-Table \ref{rbf_confusion} shows the confusion matrix for the RBF network model. As one might expect, though there were relatively low false negatives, the false positives were quite high. Consequently, I sought to strike a good balance between precision and recall using similar approaches taken in the initial experiment. 
+Table \ref{rbf_confusion} shows the confusion matrix for the RBF network model. As one might expect, though there were relatively few false negatives, the false positives were quite high. Consequently, I sought to strike a good balance between precision and recall using similar approaches taken in the initial experiment. 
 
 \begin{table}[thb]
 \centering
@@ -336,7 +336,7 @@ Firstly, by analysing the various new features used, a few of them yielded relat
 \end{tabular}
 \end{table}
 
-Finally, I sought to optimise the parameters of the RBF network model. By using 3 as the clustering seed with 2 clusters and the minimum standard deviation of 0.1 in addition to removing the win shares feature, good results were obtained, as depicted in table \ref{final_rbf_confusion}. 
+Finally, I sought to optimise the parameters of the RBF network model. By using 3 as the clustering seed with 2 clusters and the minimum standard deviation of 0.1 in addition to removing the win shares feature. Good results were obtained, as depicted in table \ref{final_rbf_confusion}. 
 
 \begin{table}[thb]
 \centering
@@ -352,7 +352,7 @@ Finally, I sought to optimise the parameters of the RBF network model. By using 
 \cline{2-4}
 & not HOF & 17 & 1489 & 1506\\
 \cline{2-4}
-\multicolumn{1}{c}{} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{87} & \multicolumn{1}{c}{1504} & \multicolumn{1}{c}{1591}\\
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{85} & \multicolumn{1}{c}{1506} & \multicolumn{1}{c}{1591}\\
 \end{tabular}
 
 \begin{tabular}{ | l | l | }
@@ -369,8 +369,19 @@ Finally, I sought to optimise the parameters of the RBF network model. By using 
 
 A comparison of the model's F-measure subject to the variations of parameters of the model and features of the dataset can be seen in table \ref{f_measure}. The overall predictive accuracy across these models remained unchanged.
 
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \vspace{-30pt}
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{ROC.pdf}
+  \end{center}
+    \vspace{-30pt}
+  \caption{\label{rbf_roc}ROC Curve}
+  \vspace{-10pt}
+\end{wrapfigure}
+
 \begin{table}[thb]
-\caption{\label{f_measure}Table Caption}
+\caption{\label{f_measure}F-measure}
 \scriptsize
 {\centering \begin{tabular}{lr@{\hspace{0cm}}c@{\hspace{0cm}}rr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}cr@{\hspace{0cm}}c@{\hspace{0cm}}r@{\hspace{0.1cm}}c}
 \\
@@ -384,16 +395,14 @@ RBF Network (optimised parameters)  & 0.74 & $\pm$ & 0.11 & 0.77 & $\pm$ & 0.11 
 \end{tabular} \scriptsize \par}
 \end{table}
 
-Evidently, the final model achieved a good balance between precision and recall as a result of optimisations and feature selection. These approaches were experimented on the different learning schemes, logistic regression, tree learning and multilayer perceptrons but none outperformed the RBF network model, even with cost-sensitive classifiers. The learning schemes that did perform well were on par with the RBF network model.\\
-\\
-The ROC curve of the RBF Network model is depicted in \ref{rbf_roc} with the an area of 0.971 under the curve.
-\begin{figure}[thb]
-  \caption{\label{rbf_roc}ROC Curve}
-  \centering
-    \includegraphics[width=0.7\textwidth]{ROC.pdf}
-\end{figure}
+Evidently, the final model achieved a good balance between precision and recall as a result of optimisations and feature selection. These approaches were experimented on the different learning schemes, logistic regression, tree learning and multilayer perceptrons but none outperformed the RBF network model, even with cost-sensitive classifiers. The learning schemes that did perform well were on par with the RBF network model. \\
 
-\subsection{Predictions}
+The ROC curve of the RBF Network model is depicted in \ref{rbf_roc} with an area of 0.971 under the curve (AUC).
+
+\pagebreak
+
+\section{Predictions}
+Using the predictive model developed in the previous section, it would be interesting for practical purposes to apply domain knowledge to reason about the misclassifications made by the model and also to analyse the generalisation power of the model by evaluating it on active or recently retired players.
 
 \section{Conclusion}
 
@@ -430,6 +439,37 @@ Retrieved 6 June 2012 from NBA:
 Smith, Lloyd and Downey, James (2009)
 \emph{"Predicting Baseball Hall of Fame Membership using a Radial Basis Function Network,"}
 Journal of Quantitative Analysis in Sports: Vol. 5: Iss. 1, Article 6.
+ 
+ \bibitem{hof_guidelines}
+ \emph{"Guidelines For Nomination and Election Into the Naismith Memorial Basketball Hall of Fame"}
+ Retrieved 7 June 2013 from Basketball Hall of Fame:
+ \url{http://www.hoophall.com/enshrinement-process/}
+ 
+ \bibitem{mvp}
+ James Bowman
+ \emph{"WNBA Most Valuable Player Shares"}
+ Retrieved 7 June 2013 from Swish Appeal:
+ \url{http://www.swishappeal.com/2010/2/21/1320444/wnba-most-valuable-player-shares}
+ 
+ \bibitem{weka}
+ Mark Hall, Eibe Frank, Geoffrey Holmes, Bernhard Pfahringer, Peter Reutemann, Ian H. Witten (2009)
+ \emph{"The WEKA Data Mining Software: An Update,"} 
+ SIGKDD Explorations, Volume 11, Issue 1.
+ 
+ \bibitem{win_share}
+ \emph{"Calculating Win Shares"}
+  Retrieved 7 June 2013 from Basketball Reference:
+ \url{http://www.basketball-reference.com/about/ws.html}
+
+ \bibitem{per}
+ \emph{"Calculating PER"}
+  Retrieved 7 June 2013 from Basketball Reference:
+ \url{ http://www.basketball-reference.com/about/per.html}
+
+\bibitem{weka_cost}
+\emph{"CostSensitiveClassifier"}
+  Retrieved 7 June 2013 from Weka Documentation:
+\url{http://weka.sourceforge.net/doc/weka/classifiers/meta/CostSensitiveClassifier.html}
  
 \end{thebibliography}
 
