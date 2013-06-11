@@ -4,34 +4,24 @@ from settings import LOGGING
 import requests, requests_cache, json, logging, logging.config, string, pprint, re, datetime, pymongo, arff, subprocess
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.preprocessing import LabelEncoder
+from sklearn import tree, svm, cross_validation, neighbors
+import numpy as np
 
+# Set-up MongoDB
 client = MongoClient()
+db = client['hof_database']
+collection = db['players_collection']
+db_players = db.players
 
-db = client.hof_database
-collection = db.players_collection
-
+# Set-up caching for requests
 requests_cache.install_cache('data_cache')
 
+# Logging
 logging.config.dictConfig(LOGGING)
 logger = logging.getLogger('parse')
 
-def memoize(filename):
-
-    def decorator(original_func):
-
-        def new_func():
-            try:
-                cache = json.load(open(filename, 'r'))
-            except (IOError, ValueError):
-                cache = original_func()
-                json.dump(cache, open(filename, 'w'))
-            return cache
-            
-        return new_func
-        
-    return decorator
-
-@memoize('players.json')
 def get_players():
     logger.info('Obtaining player list...')
     players = {}
@@ -138,121 +128,132 @@ def feet_to_cm(feet_inches_str):
     inches += 12 * feet
     return int(inches * 2.54 + 0.5)
 
-db_players = db.players
+def initialize_database():
+    players = get_players()
+    for p in players:
+        player = players[p]
+        full_players_info[p] = get_player_profile(p)
+        full_players_info[p]['pos'] = player.get('pos', []).split('-')
+        try:
+            full_players_info[p]['wt'] = int(player.get('wt'))
+            full_players_info[p]['ht'] = feet_to_cm(player.get('ht'))
+        except ValueError:
+            logger.exception('Could not parse player {p}\'s weight'.format(p=p))
+        
+        full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y')
+        full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y')
 
-# players = get_players()
-# full_players_info = {}
-# for p in players:
-#     player = players[p]
-#     full_players_info[p] = get_player_profile(p)
-#     # List of positions in case the player plays multiple
-#     full_players_info[p]['pos'] = player.get('pos', []).split('-')
-#     try:
-#         full_players_info[p]['wt'] = int(player.get('wt'))
-#         full_players_info[p]['ht'] = feet_to_cm(player.get('ht'))
-#     except ValueError:
-#         logger.exception('Could not parse player {p}\'s weight'.format(p=p))
-#         
-#     full_players_info[p]['from'] = datetime.datetime.strptime(player.get('from'), '%Y')
-#     full_players_info[p]['to'] = datetime.datetime.strptime(player.get('to'), '%Y')
+        try:
+            full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y')
+        except TypeError:
+            logger.exception('Player {p} does not have date of birth listed'.format(p=p))
+        except ValueError:
+            logger.exception('Could not parse player {p}\'s date of birth'.format(p=p))
+
+        full_players_info[p]['_id'] = p
+        
+        logger.info('Saving player {name} to database'.format(**full_players_info[p]))
+        db_players.save(full_players_info[p])
+
+def nested_get(dictionary, key, default=None, delim='.'):
+    try:
+        result = reduce(dict.get, key.split(delim), dictionary)
+        return default if result is None else result
+    except TypeError:
+        return default
+
+def players_to_list(query, fields):
+    players = []
+    for f, d in fields:
+        query[f] = {'$exists': True}
+    for p in db_players.find(query):
+        player = [len(nested_get(p, f, default=d)) if type(nested_get(p, f, default=d)) is list else nested_get(p, f, default=d) for f, d in fields]
+        players.append(player)
+    return players
+    
+def players_to_dict(query, fields, target):
+    players = []
+    labels = []
+    #for f, d in fields:
+    #    query[f] = {'$exists': True}
+    for p in db_players.find(query):
+        player = {}
+        for f, d in fields:
+            value = nested_get(p, f, default=d)
+            player[f] = len(value) if type(value) is list else value
+        players.append(player)
+        labels.append(nested_get(p, target))
+    return players, labels
+
+def players_to_arff(filename, relation_name, query, fields):
+    arff.dump(filename, players_to_list(query, fields), relation='relation_name', names=[f for f, d in fields])
+
+def players_to_array(query, fields, target):
+    le = LabelEncoder()
+    vec = DictVectorizer()
+    data, labels = players_to_dict(query, fields, target)
+    return (vec.fit_transform(data), le.fit_transform(labels))
 # 
-#     try:
-#         full_players_info[p]['dob'] = datetime.datetime.strptime(player.get('birth_date'), '%B %d, %Y')
-#     except TypeError:
-#         logger.exception('Player {p} does not have date of birth listed'.format(p=p))
-#     except ValueError:
-#         logger.exception('Could not parse player {p}\'s date of birth'.format(p=p))
+# p = db_players.find_one({'name': 'Joe McNamee'})
+# pprint.pprint(p)
+# pprint.pprint(nested_get(p, 'stats.advanced.per.value'))
 # 
-#     full_players_info[p]['_id'] = p
-# 
-#     db_players.save(full_players_info[p])
+# exit(0)
+
+simple_features = [
+    'stats.per_game.pts_per_g',
+    'stats.per_game.ast_per_g',
+    'stats.per_game.trb_per_g',
+    'stats.totals.pts',
+    'stats.totals.ast', 
+    'stats.totals.trb',
+    'stats.advanced.per',
+]
+
+features = [('.'.join([f, 'value']), 0) for f in simple_features]
+
+features.append(('honors.allstar_appearances', []))
+features.append(('honors.championships', []))
+features.append(('honors.mvpshares', 0))
 
 query = {
-    #'pos': {'$nin': ['G']},
-    #'pos': 'G',
     'stats.totals.g.value': {'$gte': 100},
     'active': False,
     'from': {'$gte': datetime.datetime(1951, 1, 1)},
     'to': {'$lt': datetime.datetime.now() - datetime.timedelta(days=5*365)},
-    'stats.advanced.per': {'$exists': True},
-    'stats.advanced.per.complete': True,
-    'stats.advanced.ts_pct': {'$exists': True},
-    'stats.advanced.ts_pct.complete': True,
-    'stats.advanced.ws': {'$exists': True},
-    'stats.advanced.ws.complete': True,
-    'stats.advanced.dws': {'$exists': True},
-    'stats.advanced.dws.complete': True,
-    'stats.advanced.ows': {'$exists': True},
-    'stats.advanced.ows.complete': True,
-    'stats.advanced.efg_pct': {'$exists': True},
-    'stats.advanced.efg_pct.complete': True,
-    'stats.totals.pts': {'$exists': True},
-    'stats.totals.pts.complete': True,
-    'stats.totals.ast': {'$exists': True},
-    'stats.totals.ast.complete': True,
-    'stats.totals.trb': {'$exists': True},
-    'stats.totals.trb.complete': True,
-    # 'stats.totals.stl': {'$exists': True},
-    # 'stats.totals.stl.complete': True,
-    # 'stats.totals.blk': {'$exists': True},
-    # 'stats.totals.blk.complete': True,
-    'stats.per_game.trb_per_g': {'$exists': True},
-    'stats.per_game.trb_per_g.complete': True,
-    # 'stats.per_game.stl_per_g': {'$exists': True},
-    # 'stats.per_game.stl_per_g.complete': True,
-    # 'stats.per_game.blk_per_g': {'$exists': True},
-    # 'stats.per_game.blk_per_g.complete': True,
-    'stats.per_game.pts_per_g': {'$exists': True},
-    'stats.per_game.pts_per_g.complete': True,
-    'stats.per_game.ast_per_g': {'$exists': True},
-    'stats.per_game.ast_per_g.complete': True,
-    #'hall_of_fame': True,
 }
 
-def get_nested(player_info, field_name, default=None):
-    for n in field_name.split('.'):
-        try:
-            a = a.get(n, default)
-        except NameError:
-            a = player_info.get(n, default)
-        except AttributeError:
-            break
-    return a
+for f in simple_features:
+    query[f] = {'$exists': True}
+    query['.'.join([f, 'complete'])] = True
 
-fields = [
-    'stats.totals.pts.value', 
-    'stats.totals.ast.value', 
-    'stats.totals.trb.value',
-    # 'stats.totals.blk.value', 
-    # 'stats.totals.stl.value',
-    'stats.per_game.pts_per_g.value',
-    'stats.per_game.ast_per_g.value',
-    'stats.per_game.trb_per_g.value',
-    # 'stats.per_game.stl_per_g.value',
-    # 'stats.per_game.blk_per_g.value',
-    'stats.advanced.per.value', 
-    #'stats.advanced.ts_pct.value', 
-    #'stats.advanced.ws.value', 
-    #'stats.advanced.dws.value', 
-    #'stats.advanced.ows.value', 
-    #'stats.advanced.efg_pct.value', 
-    #'stats.totals.g.value', 
-    #'hall_of_fame'
+players_data, players_target = players_to_array(
+        query, 
+        features,
+        'hall_of_fame'
+)
+
+kfold = cross_validation.KFold(n=players_data.shape[0], n_folds=10, indices=True)
+
+classifiers = [
+    tree.DecisionTreeClassifier(),
+    svm.SVC(),
+    neighbors.KNeighborsClassifier(10, weights='distance'),
 ]
-# 
-# weka_players = []
-# for p in db_players.find(query):
-#     #pprint.pprint(get_nested(p, 'stats.totals'))
-#     #if (p['to']-p['from']).days/365 < 1: continue
-#     player = [get_nested(p, f) for f in fields]
-#     player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
-#     player.append(len(get_nested(p, 'honors.championships', [])))
-#     player.append(get_nested(p, 'honors.mvpshares', 0))
-#     player.append(get_nested(p, 'hall_of_fame'))
-#     weka_players.append(player)
-#     
-# fields.extend(['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])
-# arff.dump('minimal.arff', weka_players, relation="nba", names=fields)
+
+for clf in classifiers:
+    print clf
+    score = cross_validation.cross_val_score(clf, players_data.toarray(), players_target, cv=kfold, n_jobs=-1)
+    print np.average(score)
+
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(players_data.toarray(), players_target)
+
+import StringIO, pydot
+dot_data = StringIO.StringIO() 
+tree.export_graphviz(clf, out_file=dot_data, feature_names=[f for f, d in features]) 
+graph = pydot.graph_from_dot_data(dot_data.getvalue()) 
+graph.write_pdf("hof.pdf")
 
 def parse_probability(weka_output):
     for line in weka_output.splitlines():
@@ -306,11 +307,11 @@ def predict():
 
     for p in db_players.find(query):
         logger.info('Player {}'.format(p['name']))
-        player = [get_nested(p, f) for f in fields]
-        player.append(len(get_nested(p, 'honors.allstar_appearances', [])))
-        player.append(len(get_nested(p, 'honors.championships', [])))
-        player.append(get_nested(p, 'honors.mvpshares', 0))
-        player.append(get_nested(p, 'hall_of_fame'))
+        player = [nested_get(p, f) for f in fields]
+        player.append(len(nested_get(p, 'honors.allstar_appearances', [])))
+        player.append(len(nested_get(p, 'honors.championships', [])))
+        player.append(nested_get(p, 'honors.mvpshares', 0))
+        player.append(nested_get(p, 'hall_of_fame'))
         arff.dump('test.arff', [player], relation="nba", names=fields+['honors.allstar_appearances', 'honors.championships', 'honors.mvpshares', 'hall_of_fame'])    
         raw_output = subprocess.check_output('java -cp /Applications/weka-3-6-9/weka.jar weka.classifiers.functions.RBFNetwork -T test.arff -l new.model -p 0'.split())
         prob = parse_probability(raw_output)
@@ -330,9 +331,9 @@ query = {
 
 for p in db_players.find(query).sort([('new_hof_probability', pymongo.DESCENDING), ('stats.advanced.per.value', pymongo.DESCENDING)]):
     #pprint.pprint(p)
-    #p['honors']['allstar_appearances'] = len(get_nested(p, 'honors.allstar_appearances', []))
-    #p['honors']['championships'] = len(get_nested(p, 'honors.championships', []))
-    #p['honors']['mvpshares'] = get_nested(p, 'honors.mvpshares', 0)
+    #p['honors']['allstar_appearances'] = len(nested_get(p, 'honors.allstar_appearances', []))
+    #p['honors']['championships'] = len(nested_get(p, 'honors.championships', []))
+    #p['honors']['mvpshares'] = nested_get(p, 'honors.mvpshares', 0)
     
     if p['new_hof_probability'] >= 0.5:
         print '\\textbf{{{name}}} & {new_hof_probability} & {stats[totals][pts][value]} & {stats[totals][ast][value]} & {stats[totals][trb][value]} & {stats[per_game][pts_per_g][value]} & {stats[per_game][ast_per_g][value]} & {stats[per_game][trb_per_g][value]} & {stats[advanced][per][value]} \\\\'.format(**p)
